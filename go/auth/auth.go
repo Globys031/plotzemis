@@ -112,12 +112,9 @@ func (s *AuthService) Login(ctx context.Context, req *library.LoginRequest) (*li
 	}, nil
 }
 
-// User role isn't saved in the token and instead has to validate
-// with the server, every time it tries to get access to restricted resource
-// This is to avoid cases where a token was issued accidentally or hijacked
+// Typically user role shouldn't be saved in the token, but it's a project requirement.
 func (s *AuthService) Validate(ctx context.Context, req *library.ValidateRequest) (*library.ValidateResponse, error) {
 	claims, err := s.Jwt.ValidateToken(req.Token)
-
 	if err != nil {
 		return &library.ValidateResponse{
 			Status: http.StatusBadRequest,
@@ -126,25 +123,14 @@ func (s *AuthService) Validate(ctx context.Context, req *library.ValidateRequest
 	}
 
 	var user models.User
-	accessRole := &req.Role
-
-// Haven't tested yet!
-
 	// Validate based on whether that name in token
 	// and access role in validateRequest matches an entry in database
-	if result := s.Handler.Database.Where(&models.User{Username: claims.Username, Role: *accessRole}).First(&user); result.Error != nil {
+	if result := s.Handler.Database.Where(&models.User{Username: claims.Username, Role: claims.Role}).First(&user); result.Error != nil {
 		return &library.ValidateResponse{
 			Status: http.StatusNotFound,
 			Error:  "User not found",
 		}, nil
 	}
-
-	// if result := s.Handler.Database.Where(&models.User{Username: claims.Username}).First(&user); result.Error != nil {
-	// 	return &library.ValidateResponse{
-	// 		Status: http.StatusNotFound,
-	// 		Error:  "User not found",
-	// 	}, nil
-	// }
 
 	return &library.ValidateResponse{
 		Status: http.StatusOK,

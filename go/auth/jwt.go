@@ -18,12 +18,14 @@ type jwtClaims struct {
 	jwt.StandardClaims
 	Id       int64
 	Username string
+	Role string // Naudotojo rolė turi būti saugoma žetono (token) viduje.
 }
 
 func (wrapper *JwtWrapper) GenerateToken(user models.User) (signedToken string, err error) {
 	claims := &jwtClaims{
 		Id:       user.Id,
 		Username: user.Username,
+		Role: user.Role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(wrapper.ExpirationHours)).Unix(),
 			Issuer:    wrapper.Issuer,

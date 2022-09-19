@@ -12,10 +12,6 @@ npm start
 
 The entrypoint is index.tsx, but app.tsx is where almost all of the frontend logic resides.
 
-## How this microservice works
-
-The entrypoint is index.tsx, but app.tsx is where almost all of the frontend logic resides.
-
 ### Roles and authentication
 
 There's 3 roles:
