@@ -5,11 +5,11 @@ import (
 	"log"
 	"strings"
 
-	"github.com/Globys031/grpc-web-video-streaming/authServer/go/models"
+	"github.com/Globys031/plotzemis/go/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm" // https://github.com/go-gorm/gorm
 
-	"github.com/Globys031/grpc-web-video-streaming/authServer/go/utils"
+	"github.com/Globys031/plotzemis/go/utils"
 )
 
 type Handler struct {

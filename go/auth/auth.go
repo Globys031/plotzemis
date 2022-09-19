@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Globys031/grpc-web-video-streaming/authServer/go/db"
-	"github.com/Globys031/grpc-web-video-streaming/authServer/go/models"
-
-	library "github.com/Globys031/grpc-web-video-streaming/authServer/go/protoLibrary"
-	"github.com/Globys031/grpc-web-video-streaming/authServer/go/utils"
 	"github.com/go-playground/validator"
+
+	"github.com/Globys031/plotzemis/go/db"
+	"github.com/Globys031/plotzemis/go/models"
+	"github.com/Globys031/plotzemis/go/utils"
 )
 
 // Return http status codes instead of grpc ones. This way additional conversion

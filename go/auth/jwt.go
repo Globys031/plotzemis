@@ -1,10 +1,10 @@
-package utils
+package auth
 
 import (
 	"errors"
 	"time"
 
-	"github.com/Globys031/grpc-web-video-streaming/authServer/go/models"
+	"github.com/Globys031/plotzemis/go/models"
 	"github.com/golang-jwt/jwt"
 )
 

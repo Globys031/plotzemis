@@ -3,7 +3,7 @@
 import {AuthServiceClient} from "../protoLibrary/AuthServiceClientPb";
 import * as library from "../protoLibrary/auth_pb";
 
-import authHeaders from "./authHeader";
+import authHeaders from "../global/authHeader";
 
 class Authentication {
   private deadline : string;

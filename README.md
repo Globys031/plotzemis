@@ -6,7 +6,7 @@ cd Plotzemis
 docker run --rm -it -p 5432:5432 --name postgreserver sqlserver
 go run authServer/go/main.go
 
-cd grpc-web-video-streaming/authServer
+cd plotzemis
 npm start
 ```
 
