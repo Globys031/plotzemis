@@ -1,6 +1,6 @@
 // This page has a Form with username & password
 //
-// If the verification is ok, we call AuthService.login() method, 
+// If the verification is ok, we call auth.AuthService.login() method, 
 // then direct user to Profile page: this.props.history.push("/profile");, 
 // or show message with response error.
 

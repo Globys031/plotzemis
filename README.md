@@ -111,6 +111,7 @@ launch.json:
 - https://github.com/jquense/yup
 - https://medium.com/@apzuk3/input-validation-in-golang-bc24cdec1835
 - https://www.digitalocean.com/community/tutorials/react-manage-user-login-react-context
+- https://levelup.gitconnected.com/microservices-with-go-grpc-api-gateway-and-authentication-part-1-2-393ad9fc9d30
 
 react-bootstrap is just bootstrap made into react components
 - https://getbootstrap.com/

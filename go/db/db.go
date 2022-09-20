@@ -5,11 +5,10 @@ import (
 	"log"
 	"strings"
 
-	"github.com/Globys031/plotzemis/go/models"
+	"github.com/Globys031/plotzemis/go/auth"
+	"github.com/Globys031/plotzemis/go/db/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm" // https://github.com/go-gorm/gorm
-
-	"github.com/Globys031/plotzemis/go/utils"
 )
 
 type Handler struct {
@@ -50,7 +49,7 @@ func InitPrivilegedUsers(db *gorm.DB) {
 
 		user.Username = privilege
 		user.Email = privilege + "@email.com"
-		user.Password = utils.HashPassword(privilege)
+		user.Password = auth.HashPassword(privilege)
 		user.Role = strings.ToUpper(privilege)
 
 		var result = db.Create(&user)

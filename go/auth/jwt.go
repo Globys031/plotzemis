@@ -4,8 +4,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Globys031/plotzemis/go/models"
 	"github.com/golang-jwt/jwt"
+
+	"github.com/Globys031/plotzemis/go/db/models"
 )
 
 type JwtWrapper struct {
@@ -14,18 +15,18 @@ type JwtWrapper struct {
 	ExpirationHours int64
 }
 
-type jwtClaims struct {
+type JwtClaims struct {
 	jwt.StandardClaims
 	Id       int64
 	Username string
-	Role string // Naudotojo rolė turi būti saugoma žetono (token) viduje.
+	Role     string // Naudotojo rolė turi būti saugoma žetono (token) viduje.
 }
 
 func (wrapper *JwtWrapper) GenerateToken(user models.User) (signedToken string, err error) {
-	claims := &jwtClaims{
-		Id:       user.Id,
+	claims := &JwtClaims{
+		Id:       user.UserId,
 		Username: user.Username,
-		Role: user.Role,
+		Role:     user.Role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(wrapper.ExpirationHours)).Unix(),
 			Issuer:    wrapper.Issuer,
@@ -43,10 +44,10 @@ func (wrapper *JwtWrapper) GenerateToken(user models.User) (signedToken string, 
 	return signedToken, nil
 }
 
-func (wrapper *JwtWrapper) ValidateToken(signedToken string) (claims *jwtClaims, err error) {
+func (wrapper *JwtWrapper) ValidateToken(signedToken string) (claims *JwtClaims, err error) {
 	token, err := jwt.ParseWithClaims(
 		signedToken,
-		&jwtClaims{},
+		&JwtClaims{},
 		func(token *jwt.Token) (interface{}, error) {
 			return []byte(wrapper.SecretKey), nil
 		},
@@ -56,7 +57,7 @@ func (wrapper *JwtWrapper) ValidateToken(signedToken string) (claims *jwtClaims,
 		return
 	}
 
-	claims, ok := token.Claims.(*jwtClaims)
+	claims, ok := token.Claims.(*JwtClaims)
 
 	if !ok {
 		return nil, errors.New("Couldn't parse JWT claims")

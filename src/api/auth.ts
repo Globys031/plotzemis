@@ -1,6 +1,6 @@
 // For JWT handling
 
-import {AuthServiceClient} from "../protoLibrary/AuthServiceClientPb";
+import {auth.AuthServiceClient} from "../protoLibrary/auth.AuthServiceClientPb";
 import * as library from "../protoLibrary/auth_pb";
 
 import authHeaders from "../global/authHeader";
@@ -20,7 +20,7 @@ class Authentication {
 
   // POST {username, email, password}
   async register(username: string, email: string, password: string, role: string) : Promise<[number, string]> {
-    const client = new AuthServiceClient(this.host)
+    const client = new auth.AuthServiceClient(this.host)
     const registerRequest = new library.RegisterRequest();
     registerRequest.setUsername(username);
     registerRequest.setEmail(email);
@@ -68,7 +68,7 @@ class Authentication {
 
   // POST {username, password} & save JWT to Local Storage
   async login(username: string, password: string) : Promise<[number, string]> {
-    const client = new AuthServiceClient(this.host)
+    const client = new auth.AuthServiceClient(this.host)
     const loginRequest = new library.LoginRequest();
     loginRequest.setUsername(username);
     loginRequest.setPassword(password);
