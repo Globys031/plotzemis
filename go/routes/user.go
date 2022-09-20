@@ -11,16 +11,42 @@ import (
 	"github.com/Globys031/plotzemis/go/db/models"
 )
 
+type RegisterRequestBody struct {
+	Username string `json:"username" validate:"required,max=20,min=6"`
+	Password string `json:"password" validate:"required,max=40,min=8"`
+	Email    string `json:"email" validate:"required,email"`
+	Role     string `json:"role" validate:"required,role"`
+}
+
+type LoginRequestBody struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LogoutRequestBody struct {
+}
+
 // use a single instance of Validate, it caches struct info (used for user struct validation)
 var validate *validator.Validate
 
 func (svc *AuthService) Register(ctx *gin.Context) {
-	var user models.User
+	// Get all user registration details and validate user input
+	// (confirm that password is certain length, etc...).
+	body := RegisterRequestBody{}
+	if err := ctx.BindJSON(&body); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+		return
+	}
+	if err := ValidateUserDataFormat(&body, svc); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "User data validation didn't succeed on the server side"})
+		return
+	}
 
+	var user models.User
 	// Sql check if user with that email already exists and if there's no error from the server
 	// Will return nil if there isn't
-	resultEmail := svc.Handler.Database.Where(&models.User{Email: ctx.Param("Email")}).First(&user)
-	resultUsername := svc.Handler.Database.Where(&models.User{Username: ctx.Param("Username")}).First(&user)
+	resultEmail := svc.Handler.Database.Where(&models.User{Email: body.Email}).First(&user)
+	resultUsername := svc.Handler.Database.Where(&models.User{Username: body.Username}).First(&user)
 
 	if resultEmail.Error == nil && resultUsername.Error == nil {
 		ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": "Username and E-mail already exists"})
@@ -33,19 +59,10 @@ func (svc *AuthService) Register(ctx *gin.Context) {
 		return
 	}
 
-	// Get all user registration details and validate user input
-	// (confirm that password is certain length, etc...).
-	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	if err := ValidateUserDataFormat(&user, svc); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "User data validation didn't succeed on the server side"})
-		return
-	}
-	// Password hashes only after validation. Otherwise, wouldn't be able
-	// to properly check what length the string is
-	user.Password = auth.HashPassword(user.Password)
+	user.Username = body.Username
+	user.Email = body.Email
+	user.Password = auth.HashPassword(body.Password)
+	user.Role = body.Role
 
 	var result = svc.Handler.Database.Create(&user)
 	if result.Error != nil {
@@ -64,14 +81,21 @@ func (svc *AuthService) Register(ctx *gin.Context) {
 }
 
 func (svc *AuthService) Login(ctx *gin.Context) {
-	var user models.User
+	body := LoginRequestBody{}
+	if err := ctx.BindJSON(&body); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+		return
+	}
 
-	if result := svc.Handler.Database.Where(&models.User{Username: ctx.Param("Username")}).First(&user); result.Error != nil {
+	fmt.Println(body.Username)
+
+	var user models.User
+	if result := svc.Handler.Database.Where(&models.User{Username: body.Username}).First(&user); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	match := auth.CheckPasswordHash(ctx.Param("Password"), user.Password)
+	match := auth.CheckPasswordHash(body.Password, user.Password)
 	if !match {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Incorrect password for this username"})
 		return

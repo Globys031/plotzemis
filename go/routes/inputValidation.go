@@ -3,16 +3,17 @@ package routes
 import (
 	"fmt"
 
-	"github.com/Globys031/plotzemis/go/db/models"
 	"github.com/go-playground/validator"
 )
 
 // Meant to validate whether the data provided by frontend is of correct format
-func ValidateUserDataFormat(user *models.User, svc *AuthService) error {
+func ValidateUserDataFormat(user *RegisterRequestBody, svc *AuthService) error {
 	validate := validator.New()
 	validate.RegisterValidation("role", validateRole)
 
-	err := validate.Struct(&user)
+	fmt.Println(user.Email)
+
+	err := validate.Struct(user)
 	if err != nil {
 		// this check is only needed when your code could produce
 		// an invalid value for validation such as interface with nil

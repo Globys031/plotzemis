@@ -2,7 +2,7 @@ import { Component } from "react";
 import { Navigate } from "react-router-dom";
 
 import {userContext} from '../user/userContext';
-import Storage from "../global/userStorage";
+import Storage from "../user/userStorage";
 
 // import User from "../protoLibrary/auth_pb";
 
@@ -53,20 +53,20 @@ export default class Profile extends Component<Props, State> {
       <div>
         <header className="jumbotron">
           <h3>
-            <strong>{this.context.user?.getUsername()}</strong> Profile
+            <strong>{this.context.user?.username}</strong> Profile
           </h3>
         </header>
         <p>
           <strong>Id:</strong>{" "}
-          {this.context.user?.getUserid()}
+          {this.context.user?.userId}
         </p>
         <p>
           <strong>Email:</strong>{" "}
-          {this.context.user?.getEmail()}
+          {this.context.user?.email}
         </p>
         <p>
           <strong>Role:</strong>{" "}
-          {this.context.user?.getRole()}
+          {this.context.user?.role}
         </p>
       </div>
       )}

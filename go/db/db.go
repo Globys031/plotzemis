@@ -47,6 +47,12 @@ func InitPrivilegedUsers(db *gorm.DB) {
 	for _, privilege := range []string{"user", "admin", "mod"} {
 		var user models.User
 
+		existingUsername := db.Where(&models.User{Username: privilege}).First(&user)
+		if existingUsername.Error == nil {
+			// Exit if users already created before.
+			return
+		}
+
 		user.Username = privilege
 		user.Email = privilege + "@email.com"
 		user.Password = auth.HashPassword(privilege)

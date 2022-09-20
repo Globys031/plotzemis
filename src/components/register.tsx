@@ -2,8 +2,8 @@ import { Component } from "react";
 import { Navigate } from "react-router-dom";
 import * as Yup from "yup";
 
-import Authentication from "../auth/grpcMethods";
-import Storage from "../global/userStorage";
+import Authentication from "../api/auth";
+import Storage from "../user/userStorage";
 
 import { Form, Formik, ErrorMessage, Field } from "formik";
 import { FormGroup, FloatingLabel} from 'react-bootstrap'
@@ -45,7 +45,7 @@ export default class Register extends Component<Props, State> {
 
     // Cia dar sugrizt, dabar turetu teisingai json pars'int
     if (currentUser) {
-      if (currentUser.getRole() === "ADMIN") {
+      if (currentUser.role === "ADMIN") {
         this.setState({ notAdmin: false });
       }
     }

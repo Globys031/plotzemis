@@ -14,19 +14,17 @@ var (
 	enableTls          = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
 	tlsCertFilePath    = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
 	tlsKeyFilePath     = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
-	auth_frontend_port = 8080 // default value. Will be changed depending on .env
 )
 
 func main() {
 	flag.Parse() // parses the above flag variables
-
 	//////////////////////////
 	// Loads configs
 	config, err := LoadConfig()
 	if err != nil {
 		log.Fatalln("Failed at config", err)
 	}
-	port := config.backend_port
+	port := config.Backend_port
 	//////////////////////////
 
 	//////////////////////////

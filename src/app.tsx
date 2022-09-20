@@ -10,9 +10,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown } from 'react-bootstrap';
 import "./app.css";
 
-import Authentication from "./auth/grpcMethods";
+import Authentication from "./api/auth";
 
-import User from "./protoLibrary/auth_pb";
+import IUser from "./types/user";
 
 import Login from "./components/login";
 import Register from "./components/register";
@@ -21,7 +21,7 @@ import PageNotFound from "./components/404";
 import Home from "./components/home";
 
 import EventBus from "./global/eventBus";
-import Storage from "./global/userStorage";
+import Storage from "./user/userStorage";
 import {userContext, IUserContext} from './user/userContext';
 // import {ThemeContext} from './common/userContext';
 
@@ -36,7 +36,7 @@ import {userContext, IUserContext} from './user/userContext';
 type Props = {};
 
 type State = {
-  user: User.User | null,
+  user: IUser | null,
   // isMod: boolean,
   // isAdmin: boolean,
   hasError: boolean,
@@ -123,7 +123,7 @@ class App extends Component<Props, State> {
               <li className="nav-item">
                 <Dropdown>
                   <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    Welcome, {this.state.user.getUsername()}
+                    Welcome, {this.state.user.username}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
@@ -133,7 +133,7 @@ class App extends Component<Props, State> {
                 </Dropdown>
               </li>
 
-              {this.state.user.getRole() === "ADMIN" && (
+              {this.state.user.role === "ADMIN" && (
               <li className="nav-item">
                 <Link to={"/register"} className="nav-link">
                   Register user
@@ -177,7 +177,7 @@ class App extends Component<Props, State> {
               <Route path="/" element={<Home />} />
               <Route path="/home" element={<Home />} />
               {/* if logged in, only show registration page for admin user */}
-              {this.state.user.getRole() === "ADMIN" && (
+              {this.state.user.role === "ADMIN" && (
                 <Route path="/register" element={<Register />} />
               )}
 

@@ -1,21 +1,21 @@
-import User from "../protoLibrary/auth_pb";
+import IUser from "../types/user";
 
 // helper functions for local browser storage
 
 class Storage  {
-  getCurrentUserInfo() : User.User | null {
+  getCurrentUserInfo() : IUser | null {
     const userStr = localStorage.getItem("user");
 
     // If userStr isn't empty or null
     if (userStr) {
-      const user : User.User = new User.User();
+      const user : IUser = {} as IUser;
   
       const stringArr = userStr.split(",")
-      user.setUserid(Number(stringArr[0]))
-      user.setUsername(stringArr[1])
-      user.setEmail(stringArr[2])
-      user.setPassword(stringArr[3])
-      user.setRole(stringArr[4])
+      user.userId = Number(stringArr[0])
+      user.username = stringArr[1]
+      user.email = stringArr[2]
+      user.password = stringArr[3]
+      user.role = stringArr[4]
 
       return user
     }

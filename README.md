@@ -4,13 +4,15 @@ Needs 3 terminals and docker desktop started.
 ```
 cd Plotzemis
 docker run --rm -it -p 5432:5432 --name postgreserver sqlserver
-go run authServer/go/main.go
+go run ./go/
 
 cd plotzemis
 npm start
 ```
 
 The entrypoint is index.tsx, but app.tsx is where almost all of the frontend logic resides.
+
+`.env.development` used by react, and `dev.env` by backend. [Read more here](https://create-react-app.dev/docs/adding-custom-environment-variables/#adding-development-environment-variables-in-env)
 
 ## References
 

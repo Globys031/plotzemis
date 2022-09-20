@@ -1,5 +1,5 @@
 
-## Starting the databse
+## Starting the database
 
 The following command will build and run image `sqlserver` in an interactive environment.
 Use the `--rm` argument to remove the container as well as all the data associated (will remove any volumes set in Dockerfile)
@@ -9,6 +9,13 @@ docker run --rm -it -p 5432:5432 --name postgreserver sqlserver
 ```
 
 Refer to the following to [use volume from previous container](https://github.com/moby/moby/issues/30647#issuecomment-277048695)
+
+### Accessing database
+
+```
+su - postgres -s /bin/bash
+psql
+```
 
 ### Using postgresql container database
 

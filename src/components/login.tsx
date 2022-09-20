@@ -5,14 +5,12 @@
 // or show message with response error.
 
 import { Component } from "react";
-import { Navigate } from "react-router-dom";
 import { Form, Formik, ErrorMessage, Field } from "formik";
 import { FormGroup, FloatingLabel} from 'react-bootstrap'
 import * as Yup from "yup";
 
-import Authentication from "../auth/grpcMethods";
+import Authentication from "../api/auth";
 import {userContext} from '../user/userContext';
-import Storage from "../global/userStorage";
 
 type Props = {};
 

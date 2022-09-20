@@ -15,12 +15,11 @@ type Config struct {
 
 	JWT_secret_key string `mapstructure:"JWT_SECRET_KEY"`
 
-	frontend_port     int `mapstructure:"FRONTEND_PORT"`
-	backend_port      int `mapstructure:"BACKEND_PORT"`
+	Backend_port int `mapstructure:"BACKEND_PORT"`
 }
 
 func LoadConfig() (c Config, err error) {
-	viper.AddConfigPath("../config/env")
+	viper.AddConfigPath(".")
 	viper.SetConfigName("dev")
 	viper.SetConfigType("env")
 
