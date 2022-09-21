@@ -16,29 +16,6 @@ type AuthService struct {
 }
 
 func RegisterRoutes(svc *AuthService) *gin.Engine {
-	// router := gin.Default()
-	// router.Use(cors.Default()) // Default() allows all CORS origins,
-	// // Considering this application will have to be uploaded to the cloud,
-	// // for simplicity's sake, I'll allow any origin to access the resource
-
-	// // Each route function decides where to use authentication middleware (if resource should be protected)
-	// // inside the function itself
-	// // Doesn't need authentication
-	// routesGuest := router.Group("/auth")
-	// routesGuest.POST("/register", svc.Register)
-	// routesGuest.POST("/login", svc.Login)
-
-	// // Needs regular user authentication
-	// routesUser := router.Group("/user")
-	// routesUser.Use(svc.AuthRequiredUser)
-	// routesUser.POST("/logout", svc.Logout)
-
-	// // // Needs admin level authentication
-	// // routesAdmin := router.Group("/admin")
-	// // routesUser.Use(svc.AuthRequiredAdmin)
-
-	// return router
-
 	router := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}
@@ -50,17 +27,19 @@ func RegisterRoutes(svc *AuthService) *gin.Engine {
 	// Each route function decides where to use authentication middleware (if resource should be protected)
 	// inside the function itself
 	// Doesn't need authentication
-	routesGuest := router.Group("/auth")
+	routesGuest := router.Group("/api")
 	routesGuest.POST("/register", svc.Register)
 	routesGuest.POST("/login", svc.Login)
 
 	// Needs regular user authentication
-	routesUser := router.Group("/user")
+	routesUser := router.Group("/api/user")
 	routesUser.Use(svc.AuthRequiredUser)
 	routesUser.POST("/logout", svc.Logout)
+	routesUser.POST("/userpost", svc.CreateUserPost)
+	routesUser.PUT("/userpost", svc.UpdateUserPost)
 
 	// // Needs admin level authentication
-	// routesAdmin := router.Group("/admin")
+	// routesAdmin := router.Group("/api/admin")
 	// routesUser.Use(svc.AuthRequiredAdmin)
 
 	return router

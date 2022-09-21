@@ -11,13 +11,6 @@ import (
 	"github.com/Globys031/plotzemis/go/db/models"
 )
 
-type RegisterRequestBody struct {
-	Username string `json:"username" validate:"required,max=20,min=6"`
-	Password string `json:"password" validate:"required,max=40,min=8"`
-	Email    string `json:"email" validate:"required,email"`
-	Role     string `json:"role" validate:"required,role"`
-}
-
 type LoginRequestBody struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -27,17 +20,17 @@ type LogoutRequestBody struct {
 }
 
 // use a single instance of Validate, it caches struct info (used for user struct validation)
-var validate *validator.Validate
+var validate *validator.Validate = validator.New()
 
 func (svc *AuthService) Register(ctx *gin.Context) {
 	// Get all user registration details and validate user input
 	// (confirm that password is certain length, etc...).
-	body := RegisterRequestBody{}
+	body := models.User{}
 	if err := ctx.BindJSON(&body); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
 		return
 	}
-	if err := ValidateUserDataFormat(&body, svc); err != nil {
+	if err := validateUserDataFormat(&body, svc); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "User data validation didn't succeed on the server side"})
 		return
 	}
@@ -111,4 +104,30 @@ func (svc *AuthService) Login(ctx *gin.Context) {
 
 func (svc *AuthService) Logout(ctx *gin.Context) {
 	// Remove token from server side as well
+}
+
+///////////////////////////////
+// Helper functions
+///////////////////////////////
+
+// Meant to validate whether the data provided by frontend is of correct format
+func validateUserDataFormat(user *models.User, svc *AuthService) error {
+	validate.RegisterValidation("role", validateRole)
+
+	err := validate.Struct(user)
+	if err != nil {
+		// this check is only needed when your code could produce
+		// an invalid value for validation such as interface with nil
+		// value most including myself do not usually have code like this.
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+		}
+	}
+	return err
+}
+
+// Confirm that role is set to one of the three
+func validateRole(fl validator.FieldLevel) bool {
+	roleName := fl.Field().String()
+	return roleName == "USER" || roleName == "MOD" || roleName == "ADMIN"
 }

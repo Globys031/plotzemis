@@ -24,7 +24,7 @@ class Authentication {
     let [responseStatus, responseError] = [400, "something went wrong client side"]
     try {
     await new Promise((resolve, reject) => axios
-      .post(this.host + "/auth/register", {
+      .post(this.host + "/api/register", {
         username,
         email,
         password,
@@ -58,7 +58,7 @@ class Authentication {
     let [responseStatus, responseError] = [400, "something went wrong client side"]
     try {
     await new Promise((resolve, reject) => axios
-      .post(this.host + "/auth/login", {
+      .post(this.host + "/api/login", {
         username,
         password
       },

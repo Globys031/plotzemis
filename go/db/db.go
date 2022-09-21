@@ -30,8 +30,16 @@ func Init(hostname string, user string, passwd string, db_name string, port int)
 	// as soon as the application is started.
 	// Atkreipt demesi kad darau mounted storage. Reikia susiziuret
 	// kaip islaikyt data isjungus konteineri
-	if err := db.AutoMigrate(&models.User{}); err == nil {
-		fmt.Println("Users table created")
+	if err := db.AutoMigrate(
+		&models.User{},
+		&models.Activity{},
+		&models.Article{},
+		&models.City{},
+		&models.Comment{},
+		&models.District{},
+		&models.UserPost{},
+	); err == nil {
+		fmt.Println("Model tables created")
 	}
 
 	// will create users "ADMIN" and "MOD" with the same username and password

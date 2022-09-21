@@ -47,11 +47,11 @@ func (svc *AuthService) AuthRequiredUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"UserId": user.UserId,
-	})
+	// ctx.JSON(http.StatusOK, gin.H{
+	// 	"UserId": user.UserId,
+	// })
 
-	ctx.Set("userId", user.UserId)
+	// ctx.Set("userId", user.UserId)
 	ctx.Next() // executes the pending handlers in the chain inside the calling handler.
 }
 
@@ -65,10 +65,10 @@ func (svc *AuthService) AuthRequiredAdmin(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"UserId": user.UserId,
-	})
+	// ctx.JSON(http.StatusOK, gin.H{
+	// 	"UserId": user.UserId,
+	// })
 
-	ctx.Set("userId", user.UserId)
+	// ctx.Set("userId", user.UserId)
 	ctx.Next() // executes the pending handlers in the chain inside the calling handler.
 }
