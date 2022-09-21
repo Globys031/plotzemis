@@ -46,12 +46,6 @@ func (svc *AuthService) AuthRequiredUser(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 		return
 	}
-
-	// ctx.JSON(http.StatusOK, gin.H{
-	// 	"UserId": user.UserId,
-	// })
-
-	// ctx.Set("userId", user.UserId)
 	ctx.Next() // executes the pending handlers in the chain inside the calling handler.
 }
 
@@ -64,11 +58,5 @@ func (svc *AuthService) AuthRequiredAdmin(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "User with this name and admin privileges not found"})
 		return
 	}
-
-	// ctx.JSON(http.StatusOK, gin.H{
-	// 	"UserId": user.UserId,
-	// })
-
-	// ctx.Set("userId", user.UserId)
 	ctx.Next() // executes the pending handlers in the chain inside the calling handler.
 }
