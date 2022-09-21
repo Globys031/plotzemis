@@ -48,6 +48,8 @@ RUN mkdir /etc/postgresql `
 COPY ./config/postgresql.conf /etc/postgresql/postgresql.conf
 COPY ./config/pg_hba.conf /etc/postgresql/pg_hba.conf
 COPY ./create_databases.sh /
+RUN chown postgres. /create_databases.sh
+RUN chown -R ${POSTGRES_USER}. "/etc/postgresql"
 
 ####
 # Keep in mind that RUN commands don't persist processes. It persists only filesystem changes
