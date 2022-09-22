@@ -184,6 +184,26 @@ func (svc *AuthService) RemoveUserPost(ctx *gin.Context) {
 	})
 }
 
+// Admins don't need to be the ones who created the post to remove it
+// If admin authentication succeeded, no further checks needed.
+func (svc *AuthService) RemoveUserPostAdmin(ctx *gin.Context) {
+	body := IdBody{}
+	if err := ctx.BindJSON(&body); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+		return
+	}
+
+	// Removes record based on post Id
+	if result := svc.Handler.Database.Delete(&models.UserPost{}, body.Id); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Post with this ID not found"})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"success": "true",
+		"result":  "Post removed",
+	})
+}
+
 func (svc *AuthService) ReadListUserPost(ctx *gin.Context) {
 	body := UserPostReadAllBody{}
 	var result *gorm.DB

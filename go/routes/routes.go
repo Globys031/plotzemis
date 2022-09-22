@@ -41,9 +41,10 @@ func RegisterRoutes(svc *AuthService) *gin.Engine {
 	routesUser.PUT("/userpost", svc.UpdateUserPost)
 	routesUser.POST("/userpost/remove", svc.RemoveUserPost)
 
-	// // Needs admin level authentication
-	// routesAdmin := router.Group("/api/admin")
-	// routesUser.Use(svc.AuthRequiredAdmin)
+	// Needs admin level authentication
+	routesAdmin := router.Group("/api/admin")
+	routesAdmin.Use(svc.AuthRequiredAdmin)
+	routesAdmin.POST("/userpost/remove", svc.RemoveUserPostAdmin)
 
 	return router
 }

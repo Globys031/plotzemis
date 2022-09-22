@@ -62,7 +62,7 @@ func (svc *AuthService) AuthRequiredAdmin(ctx *gin.Context) {
 	var user models.User
 
 	if result := svc.Handler.Database.Where(&models.User{Username: claims.Username, Role: "ADMIN"}).First(&user); result.Error != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "User with this name and admin privileges not found"})
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "You do not have admin privileges"})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{

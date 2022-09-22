@@ -33,9 +33,7 @@ func Init(hostname string, user string, passwd string, db_name string, port int)
 	if err := db.AutoMigrate(
 		&models.User{},
 		&models.Activity{},
-		&models.Article{},
 		&models.City{},
-		&models.Comment{},
 		&models.District{},
 		&models.UserPost{},
 	); err == nil {
