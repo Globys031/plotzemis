@@ -32,9 +32,9 @@ func Init(hostname string, user string, passwd string, db_name string, port int)
 	// kaip islaikyt data isjungus konteineri
 	if err := db.AutoMigrate(
 		&models.User{},
-		&models.Activity{},
-		&models.City{},
-		&models.District{},
+		&models.Building{},
+		&models.Plot{},
+		&models.Street{},
 		&models.UserPost{},
 	); err == nil {
 		fmt.Println("Model tables created")

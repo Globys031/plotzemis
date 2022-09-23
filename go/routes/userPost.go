@@ -17,7 +17,7 @@ import (
 // This one doesn't require any field to filled out.
 // But we still need to validate that the data provided fits requirements
 // Additionally takes an array of fields to know which ones should be updated
-type UserPostUpdateBody struct {
+type userPostUpdateBody struct {
 	Id          int64          `json:"id"` // post ID
 	UserId      int64          `json:"userId"`
 	City        string         `json:"city" validate:"max=20"`
@@ -30,7 +30,7 @@ type UserPostUpdateBody struct {
 	Fields      []string       `json:"fields" validate:"required"`
 }
 
-type UserPostReadAllBody struct {
+type userPostReadAllBody struct {
 	// If any of the int values is = 0, that means "unlimited" (match any)
 	// Additionally, if int values aren't specified they'll just
 	// default to 0. Effectively meaning the same thing.
@@ -102,7 +102,7 @@ func (svc *AuthService) ReadUserPost(ctx *gin.Context) {
 
 func (svc *AuthService) UpdateUserPost(ctx *gin.Context) {
 	// Bind post body and validate
-	body := UserPostUpdateBody{}
+	body := userPostUpdateBody{}
 	if err := ctx.BindJSON(&body); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
 		return
@@ -205,7 +205,7 @@ func (svc *AuthService) RemoveUserPostAdmin(ctx *gin.Context) {
 }
 
 func (svc *AuthService) ReadListUserPost(ctx *gin.Context) {
-	body := UserPostReadAllBody{}
+	body := userPostReadAllBody{}
 	var result *gorm.DB
 	var userPosts []models.UserPost
 
@@ -286,7 +286,7 @@ func validatePostDataFormat(userPost *models.UserPost, svc *AuthService) error {
 	return err
 }
 
-func validatePutDataFormat(userPost *UserPostUpdateBody, svc *AuthService) error {
+func validatePutDataFormat(userPost *userPostUpdateBody, svc *AuthService) error {
 	validate.RegisterValidation("datetime", IsDatetime)
 	err := validate.Struct(userPost)
 	if err != nil {
