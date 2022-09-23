@@ -28,16 +28,38 @@ func (svc *AuthService) Register(ctx *gin.Context) {
 	body := models.User{}
 	if err := ctx.BindJSON(&body); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"serverError": err.Error()})
 		return
 	}
 	if err := validateUserDataFormat(&body, svc); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "User data validation didn't succeed on the server side"})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"serverError": err.Error()})
 		return
 	}
 
-	var user models.User
+	//////////////////////
+	// needs to be authenticated as an admin to create more admin users
+	var adminUser models.User
+	if body.Role == "ADMIN" {
+		svc.AuthRequiredAdmin(ctx)
+		userId, _ := ctx.Get("userId") // Get userId set in middleware
+		fmt.Println(userId)
+		if userId == nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "You need to be authenticated as an admin to create more admin users"})
+			return
+		} else {
+			resultUserRole := svc.Handler.Database.Where(&models.User{Role: body.Role, UserId: userId.(int64)}).First(&adminUser)
+			if resultUserRole.Error != nil {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "You need to be authenticated as an admin to create more admin users"})
+				return
+			}
+		}
+	}
+	////////////////////
+
 	// Sql check if user with that email already exists and if there's no error from the server
 	// Will return nil if there isn't
+	var user models.User
 	resultEmail := svc.Handler.Database.Where(&models.User{Email: body.Email}).First(&user)
 	resultUsername := svc.Handler.Database.Where(&models.User{Username: body.Username}).First(&user)
 
@@ -61,6 +83,7 @@ func (svc *AuthService) Register(ctx *gin.Context) {
 	if result.Error != nil {
 		// Possible situation where postgre server was initially up, but later crashed
 		ctx.AbortWithStatusJSON(http.StatusServiceUnavailable, gin.H{"error": "Sql server is down or it couldn't process user creation"})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"serverError": err.Error()})
 		return
 	}
 
@@ -77,10 +100,9 @@ func (svc *AuthService) Login(ctx *gin.Context) {
 	body := LoginRequestBody{}
 	if err := ctx.BindJSON(&body); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"serverError": err.Error()})
 		return
 	}
-
-	fmt.Println(body.Username)
 
 	var user models.User
 	if result := svc.Handler.Database.Where(&models.User{Username: body.Username}).First(&user); result.Error != nil {
@@ -95,7 +117,6 @@ func (svc *AuthService) Login(ctx *gin.Context) {
 	}
 
 	token, _ := svc.Jwt.GenerateToken(user)
-	fmt.Println(token)
 	ctx.JSON(http.StatusOK, gin.H{
 		"token":       token,
 		"userDetails": user,
