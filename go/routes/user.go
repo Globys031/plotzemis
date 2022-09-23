@@ -36,26 +36,11 @@ func (svc *AuthService) Register(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"serverError": err.Error()})
 		return
 	}
-
-	//////////////////////
-	// needs to be authenticated as an admin to create more admin users
-	var adminUser models.User
-	if body.Role == "ADMIN" {
-		svc.AuthRequiredAdmin(ctx)
-		userId, _ := ctx.Get("userId") // Get userId set in middleware
-		fmt.Println(userId)
-		if userId == nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "You need to be authenticated as an admin to create more admin users"})
-			return
-		} else {
-			resultUserRole := svc.Handler.Database.Where(&models.User{Role: body.Role, UserId: userId.(int64)}).First(&adminUser)
-			if resultUserRole.Error != nil {
-				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "You need to be authenticated as an admin to create more admin users"})
-				return
-			}
-		}
+	// Confirm that user who is trying to create another admin user
+	// is authenticated as an admin
+	if svc.registerAdminAuthSuccess(ctx, body) != true {
+		return
 	}
-	////////////////////
 
 	// Sql check if user with that email already exists and if there's no error from the server
 	// Will return nil if there isn't
@@ -83,7 +68,7 @@ func (svc *AuthService) Register(ctx *gin.Context) {
 	if result.Error != nil {
 		// Possible situation where postgre server was initially up, but later crashed
 		ctx.AbortWithStatusJSON(http.StatusServiceUnavailable, gin.H{"error": "Sql server is down or it couldn't process user creation"})
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"serverError": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"serverError": result.Error.Error()})
 		return
 	}
 
@@ -130,6 +115,28 @@ func (svc *AuthService) Logout(ctx *gin.Context) {
 ///////////////////////////////
 // Helper functions
 ///////////////////////////////
+
+// Return true or false if user trying to create admin user can authenticate
+// as an admin himself
+func (svc *AuthService) registerAdminAuthSuccess(ctx *gin.Context, body models.User) bool {
+	var adminUser models.User
+	if body.Role == "ADMIN" {
+		svc.AuthRequiredAdmin(ctx)
+		userId, _ := ctx.Get("userId") // Get userId set in middleware
+		fmt.Println(userId)
+		if userId == nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "You need to be authenticated as an admin to create more admin users"})
+			return false
+		} else {
+			resultUserRole := svc.Handler.Database.Where(&models.User{Role: body.Role, UserId: userId.(int64)}).First(&adminUser)
+			if resultUserRole.Error != nil {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "You need to be authenticated as an admin to create more admin users"})
+				return false
+			}
+		}
+	}
+	return true
+}
 
 // Meant to validate whether the data provided by frontend is of correct format
 func validateUserDataFormat(user *models.User, svc *AuthService) error {
