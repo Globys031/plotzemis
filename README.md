@@ -45,7 +45,7 @@ Administratorius gali:
 
 Aplikacija bei jos duomenų bazė talpinama į Azure. Iš „Plotzemis HTML“ per https parsisiunčiama kliento pusės logika (bundle.js), kuri vykdoma kliento kompiuteryje, naršyklėje. Naršyklė pateikia tinklapio puslapį ir bendrauja su API per https protokolą. Tuo tarpu, duomenų bazė talpinama į docker konteinerį ir pasiekiama per tcp (angl.) „port“ 5432
 
-![Screenshot](DeploymentDiagram.jpg)
+![Screenshot](docImages/DeploymentDiagram.jpg)
 
 ## Naudotojo sąsajos projektas
 
@@ -119,6 +119,8 @@ curl -X POST '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/street GET
 
 ##### URL
@@ -171,6 +173,8 @@ curl -X GET '' \
     "success": "true"
 }
 ```
+
+Atsako kodas: 200
 
 #### /api/street/all GET
 
@@ -242,6 +246,8 @@ curl -X GET '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/user/street PUT
 
 ##### URL
@@ -303,6 +309,8 @@ curl -X PUT '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/user/street/remove REMOVE
 
 ##### URL
@@ -349,6 +357,8 @@ curl -X POST '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/admin/street/remove REMOVE
 
 ##### URL
@@ -391,6 +401,8 @@ curl -X POST '' \
     "error": " Authorization header is missing or there's no bearer"
 }
 ```
+
+Atsako kodas: 401
 
 
 ### Plot
@@ -456,6 +468,8 @@ curl -X POST '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/plot GET
 
 ##### URL
@@ -509,6 +523,8 @@ curl -X GET '' \
     "success": "true"
 }
 ```
+
+Atsako kodas: 200
 
 #### /api/plot/all GET
 
@@ -586,6 +602,8 @@ curl -X GET '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/user/plot PUT
 
 ##### URL
@@ -647,6 +665,8 @@ curl -X PUT '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/user/plot/remove REMOVE
 
 ##### URL
@@ -695,6 +715,8 @@ curl -X POST '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/admin/plot/remove REMOVE
 
 | streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
@@ -742,6 +764,8 @@ curl -X POST '' \
     "error": "You do not have admin privileges"
 }
 ```
+
+Atsako kodas: 401
 
 ### Building
 
@@ -815,6 +839,8 @@ curl -X POST '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/building GET
 
 ##### URL
@@ -861,6 +887,8 @@ curl -X GET '' \
     "error": "building with this street name, lot number and street number not found"
 }
 ```
+
+Atsako kodas: 404
 
 #### /api/building/all GET
 
@@ -925,6 +953,8 @@ curl -X GET '' \
     "success": "true"
 }
 ```
+
+Atsako kodas: 200
 
 #### /api/user/building PUT
 
@@ -994,6 +1024,8 @@ curl -X PUT '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/user/building/remove REMOVE
 
 ##### URL
@@ -1044,6 +1076,8 @@ curl -X POST '' \
 }
 ```
 
+Atsako kodas: 200
+
 #### /api/admin/building/remove REMOVE
 
 ##### URL
@@ -1090,6 +1124,8 @@ curl -X POST '' \
     "error": "You do not have admin privileges"
 }
 ```
+
+Atsako kodas: 401
 
 ## Išvados
 

@@ -220,6 +220,7 @@ func validatePlotDataFormat(plot *models.Plot, svc *AuthService) error {
 
 func validatePlotPurpose(fl validator.FieldLevel) bool {
 	purpose := strings.ToLower(fl.Field().String())
+	fmt.Println(purpose)
 	return purpose == "sandėlis" || purpose == "gyvenamasis" || purpose == "agrikultūrinis" || purpose == "miškininkystės"
 }
 
