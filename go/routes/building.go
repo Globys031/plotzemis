@@ -46,6 +46,14 @@ func (svc *AuthService) CreateBuilding(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	var building models.Building
+	if result := svc.Handler.Database.Where(&models.Building{StreetName: body.StreetName, LotNo: body.LotNo, StreetNumber: body.StreetNumber}).First(&building); result.Error == nil {
+		ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{
+			"error": "building with this street name, lot number and street number already exist",
+		})
+		return
+	}
+
 	userId, _ := ctx.Get("userId") // Get userId set in middleware
 	body.UserId = userId.(int64)
 
@@ -72,14 +80,17 @@ func (svc *AuthService) ReadBuilding(ctx *gin.Context) {
 		return
 	}
 
-	var user models.Building
-	if result := svc.Handler.Database.Where(&models.Building{StreetName: body.StreetName, LotNo: body.LotNo, StreetNumber: body.StreetNumber}).First(&user); result.Error != nil {
+	// var buildings []models.Building
+	// if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ? AND lot_no = ?", body.StreetName, body.LotNo).Find(&buildings); result.Error != nil {
+
+	var buildings models.Building
+	if result := svc.Handler.Database.Where(&models.Building{StreetName: body.StreetName, LotNo: body.LotNo, StreetNumber: body.StreetNumber}).First(&buildings); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "building with this street name, lot number and street number not found"})
 		return
 	}
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": "true",
-		"result":  user,
+		"result":  buildings,
 	})
 }
 

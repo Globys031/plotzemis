@@ -44,6 +44,14 @@ func (svc *AuthService) CreatePlot(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	var plot models.Plot
+	if result := svc.Handler.Database.Where(&models.Plot{StreetName: body.StreetName, LotNo: body.LotNo}).First(&plot); result.Error == nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"error": "Plot with this street name and lot number not found or your userId doesn't match that of the post's creator",
+		})
+		return
+	}
+
 	userId, _ := ctx.Get("userId") // Get userId set in middleware
 	body.UserId = userId.(int64)
 
@@ -69,6 +77,10 @@ func (svc *AuthService) ReadPlot(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
 		return
 	}
+
+	// Jeigu nuspresiu vis delto sarasa daryt kad grazina. Bet siaip turetu grazint tik viena
+	// var plots []models.Plot
+	// if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ?", body.StreetName, body.LotNo).Find(&plots); result.Error != nil {
 
 	var user models.Plot
 	if result := svc.Handler.Database.Where(&models.Plot{StreetName: body.StreetName, LotNo: body.LotNo}).First(&user); result.Error != nil {
@@ -150,9 +162,11 @@ func (svc *AuthService) RemovePlot(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Plot with this street name and lot number not found  or your userId doesn't match that of the post's creator"})
 		return
 	}
+	svc.Handler.Database.Where("street_name = ? AND lot_no = ?", body.StreetName, body.LotNo).Delete(&models.Building{})
+
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": "true",
-		"result":  "Post removed",
+		"result":  "Plot as well as buildings present in this plot have been removed",
 	})
 }
 

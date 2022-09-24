@@ -45,6 +45,7 @@ func (svc *AuthService) CreateStreet(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": "Street with such a name already exists"})
 		return
 	}
+
 	userId, _ := ctx.Get("userId") // Get userId set in middleware
 	body.UserId = userId.(int64)
 
@@ -78,6 +79,9 @@ func (svc *AuthService) ReadStreet(ctx *gin.Context) {
 		return
 	}
 	fmt.Println("iseina")
+
+	// var streets []models.Street
+	// if result := svc.Handler.Database.Where(&models.Street{Name: body.Name}).Find(&streets); result.Error != nil {
 
 	var street models.Street
 	if result := svc.Handler.Database.Where(&models.Street{Name: body.Name}).First(&street); result.Error != nil {
@@ -162,10 +166,12 @@ func (svc *AuthService) RemoveStreet(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found  or your userId doesn't match that of the post's creator"})
 		return
 	}
+	svc.Handler.Database.Where("street_name = ?", body.Name).Delete(&models.Plot{})
+	svc.Handler.Database.Where("street_name = ?", body.Name).Delete(&models.Building{})
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": "true",
-		"result":  "Post removed",
+		"result":  "Street as well as plots and buildings associated with it have been removed",
 	})
 }
 
