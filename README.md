@@ -28,7 +28,9 @@ Registruotas vartotojas gali:
 2.	Prisijungti.
 3.	Atsijungti.
 4.	Sudaryti naują gatvės/sklypo/statinio įrašą:
+
 4.1.	Atnaujint savo įrašo informaciją,
+
 4.2.	ištrinti savo įrašą,
 
 Administratorius gali:
@@ -49,186 +51,345 @@ Aplikacija bei jos duomenų bazė talpinama į Azure. Iš „Plotzemis HTML“ p
 
 ## API specifikacija
 
+Kiekvienas api POST/PUT metodas papildomai atlieka duomenų validaciją, kad neužpildytų duomenų bazės tuščiais duomenimis.
+
 ### street
 
 #### /api/user/street POST
 
 ##### URL
 
+```
+http://localhost:9090/api/user/street/
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | ne       |
+| Reikalauja administratoriaus teisių?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| name | taip | gatvės pavadinimas |  | partizanu g.50 |
+| city | taip | miestas, kuriame gatvė |  | Kaunas |
+| district | taip | rajonas, kuriame gatvė |  | Žaliakalnis |
+| postalCode | taip | pašto kodas | 0 | 56485 |
+| addressCount | taip | adresų skaičius gatvėje | 0 | 123 |
+| streetLength | taip | gatvės ilgis | 0 | apie 240 metrų |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "name":"partizanu g.50",
+    "city":"Kaunas",
+    "district":"Žaliakalnis",
+    "postalCode":"56485",
+    "addressCount":123,
+    "streetLength":"apie 240 metrų"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": {
+        "Id": 1,
+        "userId": 1,
+        "name": "partizanu g.50",
+        "city": "Kaunas",
+        "district": "Žaliakalnis",
+        "postalCode": "56485",
+        "addressCount": 123,
+        "streetLength": "apie 240 metrų"
+    },
+    "success": "true"
+}
 ```
 
 #### /api/street GET
 
 ##### URL
 
+```
+http://localhost:9090/api/street/
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | ne       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| name | taip | gatvės pavadinimas |  | partizanu g.50 |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X GET '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "name":"partizanu g.50"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "result": {
+        "Id": 1,
+        "userId": 1,
+        "name": "partizanu g.50",
+        "city": "Kaunas",
+        "district": "Žaliakalnis",
+        "postalCode": "56485",
+        "addressCount": 123,
+        "streetLength": "apie 240 metrų"
+    },
+    "success": "true"
+}
 ```
 
 #### /api/street/all GET
 
 ##### URL
 
+```
+http://localhost:9090/api/street/all
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | ne       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| nereikia parametrų  |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X GET '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "result": [
+        {
+            "Id": 1,
+            "userId": 1,
+            "name": "partizanu g.50",
+            "city": "Kaunas",
+            "district": "Žaliakalnis",
+            "postalCode": "56485",
+            "addressCount": 123,
+            "streetLength": "apie 240 metrų"
+        },
+        {
+            "Id": 2,
+            "userId": 1,
+            "name": "partizanu g.501",
+            "city": "Kaunas",
+            "district": "Žaliakalnis",
+            "postalCode": "56485",
+            "addressCount": 123,
+            "streetLength": "apie 240 metrų"
+        },
+        {
+            "Id": 3,
+            "userId": 1,
+            "name": "savanoriu prospektas",
+            "city": "Kaunas",
+            "district": "Žaliakalnis",
+            "postalCode": "56485",
+            "addressCount": 123,
+            "streetLength": "apie 240 metrų"
+        }
+    ],
+    "success": "true"
+}
 ```
 
 #### /api/user/street PUT
 
 ##### URL
 
+```
+http://localhost:9090/api/user/street/
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | taip        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| oldName | taip | pavadinimas prieš pakeitimą |  | savanoriu prospektas |
+| newName | ne | pavadinimas po pakeitimo |  | Vilniaus gatve |
+| postalCode | ne | pašto kodas |  | 12345 |
+| addressCount | ne | adresų skaičius gatvėje |  | 101 |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X PUT '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "oldName":"savanoriu prospektas",
+    "newName":"Vilniaus gatve",
+    "postalCode":"12345",
+    "addressCount": 101
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": {
+        "Id": 3,
+        "userId": 1,
+        "name": "Vilniaus gatve",
+        "city": "Kaunas",
+        "district": "Žaliakalnis",
+        "postalCode": "12345",
+        "addressCount": 101,
+        "streetLength": "apie 240 metrų"
+    },
+    "success": "true"
+}
 ```
 
-#### /api/user/street REMOVE
+#### /api/user/street/remove REMOVE
 
 ##### URL
 
+```
+http://localhost:9090/api/user/street/remove
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | taip        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| name | taip | gatvės pavadinimas |  | partizanu g.50 |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "name":"partizanu g.50"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": "Street as well as plots and buildings associated with it have been removed",
+    "success": "true"
+}
 ```
 
-#### /api/admin/street REMOVE
+#### /api/admin/street/remove REMOVE
 
 ##### URL
 
+```
+http://localhost:9090/api/admin/street/remove
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | taip        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| name | taip | gatvės pavadinimas |  | partizanu g.50 |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "name":"pavyzdys"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "error": " Authorization header is missing or there's no bearer"
+}
 ```
 
 
@@ -238,362 +399,349 @@ Aplikacija bei jos duomenų bazė talpinama į Azure. Iš „Plotzemis HTML“ p
 
 ##### URL
 
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
 ```
-
+http://localhost:9090/api/user/plot/
 ```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
 
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
+| lotNo | taip | ploto numeris | 0 | 52 |
+| areaSize | taip | žemės plotas arais | 0 | 20 |
+| purpose | taip | ploto paskirtis. Gali būti sandėliss/gyvenamasis/agrikultūrinis/miškininkystės |  | agrikultūrinis |
+| type | taip | ploto tipas. Gali būti nuomojamas/parduodamas/neparduodamas |  | neparduodamas |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu g.50",
+    "lotNo":110,
+    "areaSize":5,
+    "purpose":"Gyvenamasis",
+    "type":"parduodamas"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": {
+        "Id": 1,
+        "userId": 1,
+        "streetName": "partizanu g.50",
+        "lotNo": 110,
+        "areaSize": 5,
+        "purpose": "Gyvenamasis",
+        "type": "parduodamas"
+    },
+    "success": "true"
+}
 ```
 
 #### /api/plot GET
 
 ##### URL
 
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
 ```
-
+http://localhost:9090/api/plot/
 ```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
 
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | ne       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
+| lotNo | taip | ploto numeris | 0 | 52 |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X GET '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu g.50",
+    "lotNo":110
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "result": {
+        "Id": 1,
+        "userId": 1,
+        "streetName": "partizanu g.50",
+        "lotNo": 110,
+        "areaSize": 5,
+        "purpose": "Gyvenamasis",
+        "type": "parduodamas"
+    },
+    "success": "true"
+}
 ```
 
 #### /api/plot/all GET
 
 ##### URL
 
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
 ```
-
+http://localhost:9090/api/plot/all
 ```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
 
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | ne       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| neturi parametrų |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X GET '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "result": [
+        {
+            "Id": 1,
+            "userId": 1,
+            "streetName": "partizanu g.50",
+            "lotNo": 110,
+            "areaSize": 5,
+            "purpose": "Gyvenamasis",
+            "type": "parduodamas"
+        },
+        {
+            "Id": 2,
+            "userId": 1,
+            "streetName": "partizanu gatve",
+            "lotNo": 8,
+            "areaSize": 20,
+            "purpose": "Gyvenamasis",
+            "type": "neparduodamas"
+        },
+        {
+            "Id": 3,
+            "userId": 1,
+            "streetName": "partizanu gatve",
+            "lotNo": 52,
+            "areaSize": 20,
+            "purpose": "sandėlis",
+            "type": "neparduodamas"
+        },
+        {
+            "Id": 4,
+            "userId": 1,
+            "streetName": "partizghjanu gatve",
+            "lotNo": 52,
+            "areaSize": 20,
+            "purpose": "agrikultūrinis",
+            "type": "neparduodamas"
+        }
+    ],
+    "success": "true"
+}
 ```
 
 #### /api/user/plot PUT
 
 ##### URL
 
+```
+http://localhost:9090/api/user/plot
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | taip        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
+| lotNo | taip | ploto numeris | 0 | 52 |
+| areaSize | ne | žemės plotas arais | 0 | 20 |
+| purpose | ne | ploto paskirtis. Gali būti sandėliss/gyvenamasis/agrikultūrinis/miškininkystės |  | agrikultūrinis |
+| type | ne | ploto tipas. Gali būti nuomojamas/parduodamas/neparduodamas |  | neparduodamas |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X PUT '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu g.50",
+    "areaSize":1000,
+    "purpose":"Gyvenamasis",
+    "type":"parduodamas"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": {
+        "Id": 1,
+        "userId": 1,
+        "streetName": "partizanu g.50",
+        "lotNo": 110,
+        "areaSize": 1000,
+        "purpose": "Gyvenamasis",
+        "type": "parduodamas"
+    },
+    "success": "true"
+}
 ```
 
-#### /api/admin/street REMOVE
+#### /api/user/plot/remove REMOVE
 
 ##### URL
 
+```
+http://localhost:9090/api/user/plot/remove
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | taip        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+|  |  |  |  |  |
+|  |  |  |  |  |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu g.50",
+    "lotNo":110
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": "Plot as well as buildings present in this plot have been removed",
+    "success": "true"
+}
 ```
 
-#### /api/user/plot REMOVE
+#### /api/admin/plot/remove REMOVE
+
+| streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
+| lotNo | taip | ploto numeris | 0 | 52 |
 
 ##### URL
 
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
 ```
-
+http://localhost:9090/api/admin/plot
 ```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
 
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | taip        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+|  |  |  |  |  |
+|  |  |  |  |  |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu g.50",
+    "lotNo":110
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "error": "You do not have admin privileges"
+}
 ```
-
-#### /api/admin/plot REMOVE
-
-##### URL
-
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
-```
-
-```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
-
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
-```
-
-```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
 
 ### Building
 
@@ -601,363 +749,347 @@ Aplikacija bei jos duomenų bazė talpinama į Azure. Iš „Plotzemis HTML“ p
 
 ##### URL
 
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
 ```
-
+http://localhost:9090/api/user/building
 ```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
 
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
+| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
+| streetNumber | taip | pastato gatvės numeris |  | 25A |
+| type | taip | Pastato tipas. Pavyzdžiui butas, garažas, namas. Parametro pasirinkimai neribojami |  | butas |
+| areaSize | taip | plotas kvadratiniais metrais | 0 | 5 |
+| floorCount | taip | aukštų skaičius. Bus 0, jeigu pastatas yra aikštelė ar panašiai | 0 | 10 |
+| year | taip | metai, kada buvo pastatytas | 0 | 1999 |
+| price | taip | kaina eurais | 0 | 234232 |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu g.50",
+    "lotNo":110,
+    "streetNumber":"25A",
+    "type":"butas",
+    "areaSize":5,
+    "floorCount":10,
+    "year":1999,
+    "price":234232
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": {
+        "Id": 1,
+        "userId": 1,
+        "streetName": "partizanu g.50",
+        "lotNo": 110,
+        "streetNumber": "25A",
+        "type": "butas",
+        "areaSize": 5,
+        "floorCount": 10,
+        "year": 1999,
+        "price": 234232
+    },
+    "success": "true"
+}
 ```
 
 #### /api/building GET
 
 ##### URL
 
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
 ```
-
+http://localhost:9090/api/building/
 ```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
 
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | ne       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
+| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
+| streetNumber | taip | pastato gatvės numeris |  | 25A |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X GET '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu gatve 50",
+    "lotNo":110,
+    "streetNumber":"25A"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "error": "building with this street name, lot number and street number not found"
+}
 ```
 
 #### /api/building/all GET
 
 ##### URL
 
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
 ```
-
+http://localhost:9090/api/building/all
 ```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
 
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | ne       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| nereikia parametrų |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X GET '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "result": [
+        {
+            "Id": 1,
+            "userId": 1,
+            "streetName": "partizanu g.50",
+            "lotNo": 110,
+            "streetNumber": "25A",
+            "type": "butas",
+            "areaSize": 5,
+            "floorCount": 10,
+            "year": 1999,
+            "price": 234232
+        },
+        {
+            "Id": 2,
+            "userId": 1,
+            "streetName": "partizanu g.555",
+            "lotNo": 110,
+            "streetNumber": "25A",
+            "type": "butas",
+            "areaSize": 5,
+            "floorCount": 10,
+            "year": 1999,
+            "price": 234232
+        }
+    ],
+    "success": "true"
+}
 ```
 
 #### /api/user/building PUT
 
 ##### URL
 
+```
+http://localhost:9090/api/user/building
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | taip        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
+| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
+| streetNumber | taip | pastato gatvės numeris |  | 25A |
+| type | ne | Pastato tipas. Pavyzdžiui butas, garažas, namas. Parametro pasirinkimai neribojami |  | butas |
+| areaSize | ne | plotas kvadratiniais metrais | 0 | 5 |
+| floorCount | ne | aukštų skaičius. Bus 0, jeigu pastatas yra aikštelė ar panašiai | 0 | 10 |
+| year | ne | metai, kada buvo pastatytas | 0 | 1999 |
+| price | ne | kaina eurais | 0 | 234232 |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X PUT '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu g.50",
+    "lotNo":110,
+    "streetNumber":"25A",
+    "year":2001,
+    "price":234232
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": {
+        "Id": 1,
+        "userId": 1,
+        "streetName": "partizanu g.50",
+        "lotNo": 110,
+        "streetNumber": "25A",
+        "type": "butas",
+        "areaSize": 5,
+        "floorCount": 10,
+        "year": 2001,
+        "price": 234232
+    },
+    "success": "true"
+}
 ```
 
-#### /api/admin/street REMOVE
+#### /api/user/building/remove REMOVE
 
 ##### URL
 
+```
+http://localhost:9090/api/user/building/remove
+```
+
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | ne        |
+| Gali vykdyti tik savo įrašams?   | taip        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
+| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
+| streetNumber | taip | pastato gatvės numeris |  | 25A |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu gatve 50",
+    "lotNo":110,
+    "streetNumber":"25A"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "userId": 1
+}{
+    "result": "Post removed",
+    "success": "true"
+}
 ```
 
-#### /api/user/building REMOVE
+#### /api/admin/building/remove REMOVE
 
 ##### URL
 
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
 ```
-
+http://localhost:9090/api/admin/building
 ```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
 
 ##### Resurso informacija
 
 | Formatas      | Description |
 | ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
+| Reikalauja autentifikacijos?      | taip       |
+| Reikalauja administratoriaus teisių?   | taip        |
+| Gali vykdyti tik savo įrašams?   | ne        |
 
 ##### Parametrai
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
+| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
+| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
+| streetNumber | taip | pastato gatvės numeris |  | 25A |
 
 ##### Pavyzdinė užklausa
 
 ```
-
+curl -X POST '' \
+-H 'Accept: application/json' \
+-H "Authorization: Bearer ${TOKEN}" \
+-d '
+{
+    "streetName":"partizanu gatve 50",
+    "lotNo":110,
+    "streetNumber":"25A"
+}
+'
 ```
 
 ##### Pavyzdinis atsakymas
 
 ```
-
+{
+    "error": "You do not have admin privileges"
+}
 ```
-
-#### /api/user/building REMOVE ADMIN
-
-##### URL
-
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
-```
-
-```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-#### /api/admin/street REMOVE
-
-##### URL
-
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | Title       |
-| Reikalauja administratoriaus teisių?   | Text        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|       |        |     |     |     |
-|    |         |     |     |     |
-
-##### Pavyzdinė užklausa
-
-```
-
-```
-
-##### Pavyzdinis atsakymas
-
-```
-
-```
-
-
 
 ## Išvados
 
