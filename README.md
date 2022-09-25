@@ -1129,9 +1129,10 @@ Atsako kodas: 401
 
 ## Išvados
 
-- 
-- 
-- 
+- Būtina duomenų validacija backend'o pusėje. Neužtenka pasitikėti, jog frontend'o pusės perduodami duomenys bus tinkami.
+- Atsako kodai aiškiai pateikia, kokia galima problema, net jeigu negrąžinamas užklausos kūnas
+- Frontend'o aplikacija turi gebėti dinamiškai prisitaikyti prie įvairių įrenginio apribojimų. Pakeitus naršyklės lango dydį, duomenys privalo išlikti įskaitomi.
+- Wireframe'ai palengvina frontend dalies projektavimą
 
 ## Šaltiniai
 
@@ -1145,3 +1146,4 @@ Atsako kodas: 401
 - https://getbootstrap.com/
 - https://react-bootstrap.github.io/getting-started/introduction
 - https://stackoverflow.com/questions/49967779/axios-handling-errors
+- https://github.com/briancodex/react-sidebar-dropdown

@@ -19,10 +19,22 @@ import Register from "./components/register";
 import Profile from "./components/profile";
 import PageNotFound from "./components/404";
 import Home from "./components/home";
+import Sidebar from './components/sidebar';
+
+import StreetCreate from './components/streetCreate';
+
 
 import EventBus from "./global/eventBus";
 import Storage from "./user/userStorage";
 import {userContext, IUserContext} from './user/userContext';
+
+
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+
+
+
 // import {ThemeContext} from './common/userContext';
 
 // // // // for environment variables
@@ -40,6 +52,10 @@ type State = {
   // isMod: boolean,
   // isAdmin: boolean,
   hasError: boolean,
+
+  // for sidebar
+  showSidebar: boolean,
+  setShow: boolean,
 }
 
 class App extends Component<Props, State> {
@@ -55,6 +71,10 @@ class App extends Component<Props, State> {
     this.state = {
       user: currentUser,
       hasError: false,
+
+      // For sidebar:
+      showSidebar: false,
+      setShow: false,
     };
   }
 
@@ -88,7 +108,13 @@ class App extends Component<Props, State> {
     });
   }
 
+  // for sidebar
+  handleClose = () => this.setState({setShow: false})
+  handleShow = () => this.setState({setShow: true})
+
   render() {
+    const { showSidebar, setShow } = this.state;
+
     const value : IUserContext = {
       user: this.state.user,
       setUserState: () => {
@@ -106,18 +132,12 @@ class App extends Component<Props, State> {
         <div>
         </div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <Link to={"/"} className="navbar-brand">
-            root
+          <userContext.Provider value={value}>
+            <Sidebar />
+          </userContext.Provider>
+          <Link to={"/home"} className="navbar-brand">
+          Home
           </Link>
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
-              </Link>
-            </li>
-  
-          </div>
-
           {this.state.user ? (
             <div className="navbar-nav ml-auto">
               <li className="nav-item">
@@ -129,6 +149,7 @@ class App extends Component<Props, State> {
                   <Dropdown.Menu>
                     <Dropdown.Item href="/profile">Profile</Dropdown.Item>
                     <Dropdown.Item href="/settings">Settings (not yet implemented)</Dropdown.Item>
+                    <Dropdown.Item href="/login" onClick={this.logOut}>Logout</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </li>
@@ -140,12 +161,6 @@ class App extends Component<Props, State> {
                 </Link>
               </li>
               )}
-
-              <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
-                  Logout
-                </a>
-              </li>
             </div>
           ) : (
             <div className="navbar-nav ml-auto">
@@ -164,9 +179,6 @@ class App extends Component<Props, State> {
           )}
         </nav>
 
-        {/* Depending on whether user is logged in or not,
-        it will get a 404 page when trying to access certain resources that
-        would otherwise be available */}
         <div className="container mt-3">
           {this.state.user ? (
             <Routes>
@@ -197,6 +209,26 @@ class App extends Component<Props, State> {
                 </userContext.Provider>
               }></Route> */}
 
+              <Route path="/register" element={<Register />} />
+
+              <Route path="/street/list" element={<Home />} />
+              <Route path="/street/create" element={<StreetCreate />} />
+              <Route path="/street/read" element={<Home />} />
+              <Route path="/street/update" element={<Home />} />
+              <Route path="/street/delete" element={<Home />} />
+
+              <Route path="/plot/list" element={<Home />} />
+              <Route path="/plot/create" element={<Home />} />
+              <Route path="/plot/read" element={<Home />} />
+              <Route path="/plot/update" element={<Home />} />
+              <Route path="/plot/delete" element={<Home />} />
+
+              <Route path="/building/list" element={<Home />} />
+              <Route path="/building/create" element={<Home />} />
+              <Route path="/building/read" element={<Home />} />
+              <Route path="/building/update" element={<Home />} />
+              <Route path="/building/delete" element={<Home />} />
+
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           ) : (
@@ -209,12 +241,44 @@ class App extends Component<Props, State> {
                 </userContext.Provider>
               }></Route>
               <Route path="/register" element={<Register />} />
+
+              <Route path="/street/list" element={<Home />} />
+              <Route path="/street/read" element={<Home />} />
+
+              <Route path="/plot/list" element={<Home />} />
+              <Route path="/plot/read" element={<Home />} />
+
+              <Route path="/building/list" element={<Home />} />
+              <Route path="/building/read" element={<Home />} />
+
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           )}
         </div>
 
-        { /*<AuthVerify logOut={this.logOut}/> */}
+{/* 
+        <Button variant="primary" className="d-lg-none" onClick={this.handleShow}>
+          Launch
+        </Button>
+
+        <Alert variant="info" className="d-none d-lg-block">
+          Resize your browser to show the responsive offcanvas toggle.
+        </Alert>
+
+        <Offcanvas show={showSidebar} onHide={this.handleClose} responsive="lg">
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Responsive offcanvas</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+
+            <p className="mb-0">
+              This is content within an <code>.offcanvas-lg</code>.
+            </p>
+            <Sidebar />
+          </Offcanvas.Body>
+        </Offcanvas> */}
+
+
       </div>
     );
   }
