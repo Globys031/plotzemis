@@ -52,36 +52,49 @@ Aplikacija bei jos duomenų bazė talpinama į Azure. Iš „Plotzemis HTML“ p
 ### Login
 
 Prisijungus, "Login" mygtukas pradeda suktis ir po dviejų sekundžių nukreipia į vartotojo profilio puslapį.
+
 ![Screenshot](docImages/login.jpg)
 
 ### Register
 
 `Admin` vartotojas gali sukurti daugiau skirtingas teises turinčių vartotojų.
+
 ![Screenshot](docImages/Register.jpg)
+
+### Logout
+
+Atsijungti galima paspaudus `dropdow` mygtuką.
+
+![Screenshot](docImages/Logout.jpg)
 
 ### List
 
 Sąrašas pateikiamas lentelės forma.
+
 ![Screenshot](docImages/list.jpg)
 
 ### Create
 
 Atliekama įvedamų duomenų validacija.
+
 ![Screenshot](docImages/create.jpg)
 
 ### Read
 
 Nuskaičius įrašą, šis pateikiamas lentelės forma.
+
 ![Screenshot](docImages/Read.jpg)
 
 ### Update
 
 Įrašus gali keisti tik vartotojas, kuris juos sukūrė.
+
 ![Screenshot](docImages/Update.jpg)
 
 ### Remove
 
 Įrašus naikinti gali administratoriai ir vartotojai, kurie juos sukūrė.
+
 ![Screenshot](docImages/Remove.jpg)
 
 
