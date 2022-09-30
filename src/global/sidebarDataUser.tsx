@@ -8,12 +8,16 @@ import * as GiIcons from 'react-icons/gi';
 export const SidebarDataUser = [
   {
     title: 'Streets',
-    path: '/street/list',
     icon: <SiIcons.SiGooglestreetview />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
 
     subNav: [
+      {
+        title: 'List',
+        path: '/street/list',
+        icon: <IoIcons.IoIosPaper />
+      },
       {
         title: 'Create',
         path: '/street/create',
@@ -38,12 +42,16 @@ export const SidebarDataUser = [
   },
   {
     title: 'Plots',
-    path: '/plot/list',
     icon: <GiIcons.GiPlainSquare />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
 
     subNav: [
+      {
+        title: 'List',
+        path: '/plot/list',
+        icon: <IoIcons.IoIosPaper />
+      },
       {
         title: 'Create',
         path: '/plot/create',
@@ -68,12 +76,16 @@ export const SidebarDataUser = [
   },
   {
     title: 'Buildings',
-    path: '/building/list',
     icon: <AiIcons.AiFillHome />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
 
     subNav: [
+      {
+        title: 'List',
+        path: '/building/list',
+        icon: <IoIcons.IoIosPaper />
+      },
       {
         title: 'Create',
         path: '/building/create',

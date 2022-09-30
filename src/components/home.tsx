@@ -1,10 +1,14 @@
-import React from "react";
 import { Component } from "react";
+import MapImage from "../images/map.png";
+
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import Offcanvas from 'react-bootstrap/Offcanvas';
 
 type Props = {};
 
 type State = {
-  content: string;
+  show: boolean,
 }
 
 export default class Home extends Component<Props, State> {
@@ -12,37 +16,40 @@ export default class Home extends Component<Props, State> {
     super(props);
 
     this.state = {
-      content: ""
+      show: false,
     };
   }
 
-  componentDidMount() {
-    // Nereikia sito dabar. Cia is serverio puses pasiimtu content
-    // Pavyzdy padaryta taip, kad nuejus i /home, iskviestu content prieinama visiem user'iams
-
-    // UserService.getPublicContent().then(
-    //   response => {
-    //     this.setState({
-    //       content: response.data
-    //     });
-    //   },
-    //   error => {
-    //     this.setState({
-    //       content:
-    //         (error.response && error.response.data) ||
-    //         error.message ||
-    //         error.toString()
-    //     });
-    //   }
-    // );
-  }
+  handleClose = () => this.setState({show: false})
+  handleShow = () => this.setState({show: true})
 
   render() {
+    const { show } = this.state;
+
     return (
-      <div className="container">
-        <header className="jumbotron">
-          <h3>{this.state.content}</h3>
-        </header>
+      <div>
+
+      <h1>Home page</h1>
+
+      <Alert variant="info" className="d-none d-lg-block">
+        If you resize the browser, the image will become invisible
+      </Alert>
+
+      <Offcanvas show={show} onHide={this.handleClose} responsive="lg">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Responsive offcanvas</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <div className="col-md-12">
+            <div className="card">
+              <img src={MapImage} alt="Doggie" />
+            </div>
+          </div>
+        </Offcanvas.Body>
+      </Offcanvas>
+
+
+
       </div>
     );
   }

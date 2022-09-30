@@ -43,34 +43,11 @@ import EventBus from "./global/eventBus";
 import Storage from "./user/userStorage";
 import {userContext, IUserContext} from './user/userContext';
 
-
-import Alert from 'react-bootstrap/Alert';
-import Button from 'react-bootstrap/Button';
-import Offcanvas from 'react-bootstrap/Offcanvas';
-
-
-
-// import {ThemeContext} from './common/userContext';
-
-// // // // for environment variables
-// // import path from "path";
-// import * as dotenv from "dotenv";
-// // dotenv.config({ path: path.resolve(__dirname, "../../config/env/dev.env") });
-// dotenv.config()
-// // require('dotenv').config({ path: path.resolve(__dirname, "../../config/env/dev.env") })
-// // process.env.
-
 type Props = {};
 
 type State = {
   user: IUser | null,
-  // isMod: boolean,
-  // isAdmin: boolean,
   hasError: boolean,
-
-  // for sidebar
-  showSidebar: boolean,
-  setShow: boolean,
 }
 
 class App extends Component<Props, State> {
@@ -86,10 +63,6 @@ class App extends Component<Props, State> {
     this.state = {
       user: currentUser,
       hasError: false,
-
-      // For sidebar:
-      showSidebar: false,
-      setShow: false,
     };
   }
 
@@ -123,13 +96,7 @@ class App extends Component<Props, State> {
     });
   }
 
-  // for sidebar
-  handleClose = () => this.setState({setShow: false})
-  handleShow = () => this.setState({setShow: true})
-
   render() {
-    const { showSidebar, setShow } = this.state;
-
     const value : IUserContext = {
       user: this.state.user,
       setUserState: () => {
@@ -270,30 +237,6 @@ class App extends Component<Props, State> {
             </Routes>
           )}
         </div>
-
-{/* 
-        <Button variant="primary" className="d-lg-none" onClick={this.handleShow}>
-          Launch
-        </Button>
-
-        <Alert variant="info" className="d-none d-lg-block">
-          Resize your browser to show the responsive offcanvas toggle.
-        </Alert>
-
-        <Offcanvas show={showSidebar} onHide={this.handleClose} responsive="lg">
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Responsive offcanvas</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-
-            <p className="mb-0">
-              This is content within an <code>.offcanvas-lg</code>.
-            </p>
-            <Sidebar />
-          </Offcanvas.Body>
-        </Offcanvas> */}
-
-
       </div>
     );
   }
