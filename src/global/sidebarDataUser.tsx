@@ -16,7 +16,7 @@ export const SidebarDataUser = [
     subNav: [
       {
         title: 'Create',
-        path: '/street/list',
+        path: '/street/create',
         icon: <IoIcons.IoIosPaper />
       },
       {

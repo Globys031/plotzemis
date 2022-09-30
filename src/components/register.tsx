@@ -102,9 +102,7 @@ export default class Register extends Component<Props, State> {
       loading: true,
     });
 
-    console.log("ieina")
     let [responseStatus, responseMsg] = await Authentication.register(username, email, password, role)
-    console.log("ciuju neiseina")
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses
     // If registration was successful, treat the user as logged in

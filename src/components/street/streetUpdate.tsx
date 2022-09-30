@@ -2,64 +2,40 @@ import { Component } from "react";
 import { Navigate } from "react-router-dom";
 import * as Yup from "yup";
 
-import Street from "../api/street";
-import Storage from "../user/userStorage";
+import Street from "../../api/street";
+import Storage from "../../user/userStorage";
 
 import { Form, Formik, ErrorMessage, Field } from "formik";
-import { FormGroup, FloatingLabel} from 'react-bootstrap'
+import { FormGroup, FloatingLabel, Table} from 'react-bootstrap'
+
+import { IStreet } from "../../types/street";
 
 
 type Props = {};
 
 type State = {
-  name: string,
-  city: string,
-  district: string,
-  postalCode: string,
-  addressCount: number,
-  streetLength: string,
+  street: IStreet,
 
-  loading: boolean,
   errorMsg: string,
   submitted: boolean,
-  notAdmin: boolean,
 };
 
-export default class StreetCreate extends Component<Props, State> {
+export default class StreetUpdate extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.handleStreetCreate = this.handleStreetCreate.bind(this);
+    this.handleStreetUpdate = this.handleStreetUpdate.bind(this);
 
     this.state = {
-      name: "",
-      city: "",
-      district: "",
-      postalCode: "",
-      addressCount: 0,
-      streetLength: "",
+      street: {} as IStreet,
 
-      loading: false,
       errorMsg: "",
       submitted: false,
-      notAdmin: true,
     };
-  }
-
-  // If logged in user is admin, he can remove other people's streets
-  componentDidMount() {
-    const currentUser = Storage.getCurrentUserInfo();
-
-    // Cia dar sugrizt, dabar turetu teisingai json pars'int
-    if (currentUser) {
-      if (currentUser.role === "ADMIN") {
-        this.setState({ notAdmin: false });
-      }
-    }
   }
 
   validationSchema() {
     return Yup.object().shape({
-      name: Yup.string()
+      oldName: Yup.string()
         .test(
           "len",
           "The street name must be between 4 and 100 characters.",
@@ -69,75 +45,31 @@ export default class StreetCreate extends Component<Props, State> {
             val.toString().length <= 100
         )
         .required("This field is required!"),
-      city: Yup.string()
-        .test(
-          "len",
-          "The city name must be between 4 and 20 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length >= 4 &&
-            val.toString().length <= 20
-        )
-        .required("This field is required!"),
-      district: Yup.string()
-        .test(
-          "len",
-          "The district name must be between 4 and 100 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length >= 4 &&
-            val.toString().length <= 100
-        )
-      .required("This field is required!"),
-      postalCode: Yup.string()
-        .test(
-          "len",
-          "The postal code must be 5 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length >= 4 &&
-            val.toString().length <= 100
-        )
-        .required("This field is required!"),
-      adressCount: Yup.number()
-        .min(1, "There must be at least 1 or more addresses")
-        .max(9999, "There must be less than 9999 addresses")
-        .required("This field is required!"),
-      streetLength: Yup.string()
-        .test(
-          "len",
-          "The street length must be between 2 and 40 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length >= 2 &&
-            val.toString().length <= 40
-        )
-        .required("This field is required!"),
     });
   }
 
+  async handleStreetUpdate(formValue: { oldName: string; newName: string; city: string; district: string; postalCode: string; addressCount: number; streetLength: string; }) {
+    const { oldName, newName, city, district, postalCode, addressCount, streetLength } = formValue;
 
-  // Register user and output timer that shows when the user will be redirected
-  handleStreetCreate(formValue: { name: string; city: string; district: string; postalCode: string; addressCount: number; streetLength: string; }) {
-    const { name, city, district, postalCode, addressCount, streetLength } = formValue;
 
     let successState = false;
 
     this.setState({
       errorMsg: "",
       submitted: false,
-      loading: true,
     });
 
     // no need for await anymore. this.setState will cause a rerendering.
-    let [responseStatus, responseMsg] = Street.create(name, city, district, postalCode, addressCount, streetLength)
+    let [responseStatus, responseMsg, responseStreet] = await Street.update(oldName, newName, city, district, postalCode, addressCount, streetLength)
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses
     if (responseStatus > 199 && responseStatus < 300) {
-      successState = true;
+      this.setState({
+        street: responseStreet,
+      });
     } else {
       this.setState({
-        loading: false,
+        street: responseStreet,
         errorMsg: responseMsg,
       });
     }
@@ -148,10 +80,11 @@ export default class StreetCreate extends Component<Props, State> {
   }
 
   render() {
-    const { loading, errorMsg, submitted, notAdmin } = this.state
+    const { errorMsg, submitted, street } = this.state
 
     const initialValues = {
-      name: "",
+      oldName: "",
+      newName: "",
       city: "",
       district: "",
       postalCode: "",
@@ -162,26 +95,35 @@ export default class StreetCreate extends Component<Props, State> {
     return (
       <div className="col-md-12">
         <div className="card card-container">
-          <img
-            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card"
-          />
           {/* used as a hook to initialize form values */}
           <Formik
             initialValues={initialValues}
             validationSchema={this.validationSchema}
-            onSubmit={this.handleStreetCreate}
+            onSubmit={this.handleStreetUpdate}
           >
             {/* acts as an HTML form tag to wrap form controls. */}
             <Form>
+              <div>
               <FormGroup>
-                <FloatingLabel controlId="floatingName" label="Name">
+                <FloatingLabel controlId="floatingName" label="Old name">
                   {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="name" type="text" className="form-control" placeholder="example street name" />
+                  <Field name="oldName" type="text" className="form-control" placeholder="example street name" />
                 </FloatingLabel>
                 <ErrorMessage
-                  name="name"
+                  name="oldName"
+                  component="div"
+                  className="alert alert-danger"
+                />
+              </FormGroup>
+              <br></br>
+
+              <FormGroup>
+                <FloatingLabel controlId="floatingName" label="New name">
+                  {/* A placeholder is required on each <Form.Control> */}
+                  <Field name="newName" type="text" className="form-control" placeholder="example street name" />
+                </FloatingLabel>
+                <ErrorMessage
+                  name="newName"
                   component="div"
                   className="alert alert-danger"
                 />
@@ -253,9 +195,64 @@ export default class StreetCreate extends Component<Props, State> {
                 />
               </FormGroup>
               <br></br>
+
+              <div className="form-group">
+                  <button type="submit" className="btn btn-primary btn-block">
+                    Submit
+                  </button>
+                </div>
+              </div>
+
+              {errorMsg && (
+                <div className="form-group">
+                  <div className="alert alert-danger" role="alert">
+                    {errorMsg}
+                  </div>
+                </div>
+              )}
+
+              {(errorMsg === "" && submitted) && (
+                <div className="form-group">
+                  <div
+                    className="alert alert-success"
+                    role="alert"
+                  >
+                    Updated successfully
+                  </div>
+                </div>
+              )}
+
+
             </Form>
           </Formik>
         </div>
+
+        {street.name && (
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>User Id</th>
+              <th>Street name</th>
+              <th>City</th>
+              <th>District</th>
+              <th>Postal Code</th>
+              <th>Address Count</th>
+              <th>Street Length</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr key={street.id}>
+              <td>{street.userId}</td>
+              <td>{street.name}</td>
+              <td>{street.city}</td>
+              <td>{street.district}</td>
+              <td>{street.postalCode}</td>
+              <td>{street.addressCount}</td>
+              <td>{street.streetLength}</td>
+          </tr>
+          </tbody>
+        </Table>
+        )}
       </div>
     );
   }

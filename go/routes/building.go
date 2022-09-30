@@ -5,6 +5,7 @@ package routes
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -62,7 +63,7 @@ func (svc *AuthService) CreateBuilding(ctx *gin.Context) {
 		fmt.Println(result.Error)
 		// Possible situation where postgre server was initially up, but later crashed
 		ctx.AbortWithStatusJSON(http.StatusServiceUnavailable, gin.H{
-			"error":       "Sql server is down or it couldn't process user creation",
+			"error":       "Sql server is down or it couldn't process building creation",
 			"serverError": result.Error.Error(),
 		})
 		return
@@ -74,9 +75,13 @@ func (svc *AuthService) CreateBuilding(ctx *gin.Context) {
 }
 
 func (svc *AuthService) ReadBuilding(ctx *gin.Context) {
-	body := buildingGetBody{}
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+	streetName := ctx.Query("streetName")
+	streetNumber := ctx.Query("streetNumber")
+	lotNo, err := strconv.ParseInt(ctx.Query("lotNo"), 0, 64)
+
+	// lotNo is a number, but I guess gin will treat it as a string
+	if streetName == "" || streetNumber == "" || err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
 		return
 	}
 
@@ -84,7 +89,7 @@ func (svc *AuthService) ReadBuilding(ctx *gin.Context) {
 	// if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ? AND lot_no = ?", body.StreetName, body.LotNo).Find(&buildings); result.Error != nil {
 
 	var buildings models.Building
-	if result := svc.Handler.Database.Where(&models.Building{StreetName: body.StreetName, LotNo: body.LotNo, StreetNumber: body.StreetNumber}).First(&buildings); result.Error != nil {
+	if result := svc.Handler.Database.Where(&models.Building{StreetName: streetName, LotNo: lotNo, StreetNumber: streetNumber}).First(&buildings); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "building with this street name, lot number and street number not found"})
 		return
 	}
@@ -97,7 +102,8 @@ func (svc *AuthService) ReadBuilding(ctx *gin.Context) {
 func (svc *AuthService) UpdateBuilding(ctx *gin.Context) {
 	// Bind post body and validate
 	body := buildingUpdateBody{}
-	if err := ctx.BindJSON(&body); err != nil {
+	if err := ctx.BindJSON(&body); err != nil || body.StreetName == "" || body.LotNo == 0 || body.StreetNumber == "" {
+		fmt.Println(body)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
 		return
 	}
@@ -150,7 +156,7 @@ func (svc *AuthService) UpdateBuilding(ctx *gin.Context) {
 	var result = svc.Handler.Database.Save(&building)
 	if result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusServiceUnavailable, gin.H{
-			"error":       "Sql server is down or it couldn't process user creation",
+			"error":       "Sql server is down or it couldn't process building creation",
 			"serverError": result.Error.Error(),
 		})
 		return
@@ -162,15 +168,25 @@ func (svc *AuthService) UpdateBuilding(ctx *gin.Context) {
 }
 
 func (svc *AuthService) RemoveBuilding(ctx *gin.Context) {
-	body := buildingGetBody{}
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
-		return
-	}
+	streetName := ctx.Query("streetName")
+	streetNumber := ctx.Query("streetNumber")
+	lotNo, err := strconv.ParseInt(ctx.Query("lotNo"), 0, 64)
+
 	userId, _ := ctx.Get("userId") // Get userId set in middleware
 
+	// lotNo is a number, but I guess gin will treat it as a string
+	if streetName == "" || streetNumber == "" || err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
+		return
+	}
+	var building models.Building
+	if result := svc.Handler.Database.Where(&models.Building{StreetName: streetName, LotNo: lotNo, StreetNumber: streetNumber, UserId: userId.(int64)}).First(&building); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "building with this street name, lot number and street number not found"})
+		return
+	}
+
 	// Removes record based on post Id
-	if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ? AND street_number = ? AND user_id = ?", body.StreetName, body.LotNo, body.StreetNumber, userId.(int64)).Delete(&models.Building{}); result.Error != nil {
+	if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ? AND street_number = ? AND user_id = ?", streetName, lotNo, streetNumber, userId.(int64)).Delete(&models.Building{}); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "building with this street name, lot number and street number not found  or your userId doesn't match that of the post's creator"})
 		return
 	}
@@ -183,12 +199,22 @@ func (svc *AuthService) RemoveBuilding(ctx *gin.Context) {
 // Admins don't need to be the ones who created the post to remove it
 // If admin authentication succeeded, no further checks needed.
 func (svc *AuthService) RemoveBuildingAdmin(ctx *gin.Context) {
-	body := buildingGetBody{}
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+	streetName := ctx.Query("streetName")
+	streetNumber := ctx.Query("streetNumber")
+	lotNo, err := strconv.ParseInt(ctx.Query("lotNo"), 0, 64)
+
+	// lotNo is a number, but I guess gin will treat it as a string
+	if streetName == "" || streetNumber == "" || err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
 		return
 	}
-	if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ? AND street_number = ?", body.StreetName, body.LotNo, body.StreetNumber).Delete(&models.Building{}); result.Error != nil {
+	var buildings models.Building
+	if result := svc.Handler.Database.Where(&models.Building{StreetName: streetName, LotNo: lotNo, StreetNumber: streetNumber}).First(&buildings); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "building with this street name, lot number and street number not found"})
+		return
+	}
+
+	if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ? AND street_number = ?", streetName, lotNo, streetNumber).Delete(&models.Building{}); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "building with this street name, lot number and street number not found"})
 		return
 	}

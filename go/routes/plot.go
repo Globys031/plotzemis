@@ -5,6 +5,7 @@ package routes
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -60,7 +61,7 @@ func (svc *AuthService) CreatePlot(ctx *gin.Context) {
 		fmt.Println(result.Error)
 		// Possible situation where postgre server was initially up, but later crashed
 		ctx.AbortWithStatusJSON(http.StatusServiceUnavailable, gin.H{
-			"error":       "Sql server is down or it couldn't process user creation",
+			"error":       "Sql server is down or it couldn't process plot creation",
 			"serverError": result.Error.Error(),
 		})
 		return
@@ -72,9 +73,12 @@ func (svc *AuthService) CreatePlot(ctx *gin.Context) {
 }
 
 func (svc *AuthService) ReadPlot(ctx *gin.Context) {
-	body := plotGetBody{}
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+	streetName := ctx.Query("streetName")
+	lotNo, err := strconv.ParseInt(ctx.Query("lotNo"), 0, 64)
+
+	// lotNo is a number, but I guess gin will treat it as a string
+	if streetName == "" || err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
 		return
 	}
 
@@ -82,27 +86,26 @@ func (svc *AuthService) ReadPlot(ctx *gin.Context) {
 	// var plots []models.Plot
 	// if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ?", body.StreetName, body.LotNo).Find(&plots); result.Error != nil {
 
-	var user models.Plot
-	if result := svc.Handler.Database.Where(&models.Plot{StreetName: body.StreetName, LotNo: body.LotNo}).First(&user); result.Error != nil {
+	var plot models.Plot
+	if result := svc.Handler.Database.Where(&models.Plot{StreetName: streetName, LotNo: lotNo}).First(&plot); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Plot with this street name and lot number not found"})
 		return
 	}
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": "true",
-		"result":  user,
+		"result":  plot,
 	})
 }
 
 func (svc *AuthService) UpdatePlot(ctx *gin.Context) {
 	// Bind post body and validate
 	body := plotUpdateBody{}
-	if err := ctx.BindJSON(&body); err != nil {
+	if err := ctx.BindJSON(&body); err != nil || body.StreetName == "" || body.LotNo == 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
 		return
 	}
 	userId, _ := ctx.Get("userId") // Get userId set in middleware
 
-	// Get info from userpost based on ID
 	var plot models.Plot
 	if result := svc.Handler.Database.Where(&models.Plot{StreetName: body.StreetName, LotNo: body.LotNo, UserId: userId.(int64)}).First(&plot); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
@@ -139,7 +142,7 @@ func (svc *AuthService) UpdatePlot(ctx *gin.Context) {
 	var result = svc.Handler.Database.Save(&plot)
 	if result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusServiceUnavailable, gin.H{
-			"error":       "Sql server is down or it couldn't process user creation",
+			"error":       "Sql server is down or it couldn't process plot creation",
 			"serverError": result.Error.Error(),
 		})
 		return
@@ -151,18 +154,27 @@ func (svc *AuthService) UpdatePlot(ctx *gin.Context) {
 }
 
 func (svc *AuthService) RemovePlot(ctx *gin.Context) {
-	body := plotGetBody{}
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
-		return
-	}
+	streetName := ctx.Query("streetName")
+	lotNo, err := strconv.ParseInt(ctx.Query("lotNo"), 0, 64)
+
 	userId, _ := ctx.Get("userId") // Get userId set in middleware
 
-	if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ? AND user_id = ?", body.StreetName, body.LotNo, userId.(int64)).Delete(&models.Plot{}); result.Error != nil {
+	// lotNo is a number, but I guess gin will treat it as a string
+	if streetName == "" || err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
+		return
+	}
+	var plot models.Plot
+	if result := svc.Handler.Database.Where(&models.Plot{StreetName: streetName, LotNo: lotNo, UserId: userId.(int64)}).First(&plot); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Plot with this street name and lot number not found"})
+		return
+	}
+
+	if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ? AND user_id = ?", streetName, lotNo, userId.(int64)).Delete(&models.Plot{}); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Plot with this street name and lot number not found  or your userId doesn't match that of the post's creator"})
 		return
 	}
-	svc.Handler.Database.Where("street_name = ? AND lot_no = ?", body.StreetName, body.LotNo).Delete(&models.Building{})
+	svc.Handler.Database.Where("street_name = ? AND lot_no = ?", streetName, lotNo).Delete(&models.Building{})
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": "true",
@@ -173,14 +185,22 @@ func (svc *AuthService) RemovePlot(ctx *gin.Context) {
 // Admins don't need to be the ones who created the post to remove it
 // If admin authentication succeeded, no further checks needed.
 func (svc *AuthService) RemovePlotAdmin(ctx *gin.Context) {
-	body := plotGetBody{}
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+	streetName := ctx.Query("streetName")
+	lotNo, err := strconv.ParseInt(ctx.Query("lotNo"), 0, 64)
+
+	// lotNo is a number, but I guess gin will treat it as a string
+	if streetName == "" || err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
+		return
+	}
+	var plot models.Plot
+	if result := svc.Handler.Database.Where(&models.Plot{StreetName: streetName, LotNo: lotNo}).First(&plot); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Plot with this street name and lot number not found"})
 		return
 	}
 
 	// Removes record based on post Id
-	if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ?", body.StreetName, body.LotNo).Delete(&models.Plot{}); result.Error != nil {
+	if result := svc.Handler.Database.Where("street_name = ? AND lot_no = ?", streetName, lotNo).Delete(&models.Plot{}); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Plot with this street name and lot number not found"})
 		return
 	}

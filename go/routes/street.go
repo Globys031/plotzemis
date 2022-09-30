@@ -68,23 +68,15 @@ func (svc *AuthService) CreateStreet(ctx *gin.Context) {
 func (svc *AuthService) ReadStreet(ctx *gin.Context) {
 	// jsonData, _ := ioutil.ReadAll(ctx.Request.Body)
 	// fmt.Println(string(jsonData))
-	// body := streetGetBody{}
-	// ctx.BindJSON(&body)
-	// fmt.Println(body)
 
-	body := streetGetBody{}
-	fmt.Println("ieina")
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+	var name string
+	if name = ctx.Query("name"); name == "" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
 		return
 	}
-	fmt.Println("iseina")
-
-	// var streets []models.Street
-	// if result := svc.Handler.Database.Where(&models.Street{Name: body.Name}).Find(&streets); result.Error != nil {
 
 	var street models.Street
-	if result := svc.Handler.Database.Where(&models.Street{Name: body.Name}).First(&street); result.Error != nil {
+	if result := svc.Handler.Database.Where(&models.Street{Name: name}).First(&street); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found"})
 		return
 	}
@@ -97,10 +89,11 @@ func (svc *AuthService) ReadStreet(ctx *gin.Context) {
 func (svc *AuthService) UpdateStreet(ctx *gin.Context) {
 	// Bind post body and validate
 	body := streetUpdateBody{}
-	if err := ctx.BindJSON(&body); err != nil {
+	if err := ctx.BindJSON(&body); err != nil || body.OldName == "" {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
 		return
 	}
+
 	userId, _ := ctx.Get("userId") // Get userId set in middleware
 
 	// Get info from street based on name
@@ -155,19 +148,29 @@ func (svc *AuthService) UpdateStreet(ctx *gin.Context) {
 }
 
 func (svc *AuthService) RemoveStreet(ctx *gin.Context) {
-	body := streetGetBody{}
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+	var name string
+	if name = ctx.Query("name"); name == "" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
 		return
 	}
+
 	userId, _ := ctx.Get("userId") // Get userId set in middleware
 
-	if result := svc.Handler.Database.Where("name = ? AND user_id = ?", body.Name, userId.(int64)).Delete(&models.Street{}); result.Error != nil {
+	// Quick and dirty work-around because remove seems to always return successful even
+	// if there was no element to be found.
+	var street models.Street
+	if resultTest := svc.Handler.Database.Where("name = ? AND user_id = ?", name, userId.(int64)).First(&street); resultTest.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found  or your userId doesn't match that of the post's creator"})
 		return
 	}
-	svc.Handler.Database.Where("street_name = ?", body.Name).Delete(&models.Plot{})
-	svc.Handler.Database.Where("street_name = ?", body.Name).Delete(&models.Building{})
+
+	if result := svc.Handler.Database.Where("name = ? AND user_id = ?", name, userId.(int64)).Delete(&models.Street{}); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found  or your userId doesn't match that of the post's creator"})
+		return
+	}
+
+	svc.Handler.Database.Where("street_name = ?", name).Delete(&models.Plot{})
+	svc.Handler.Database.Where("street_name = ?", name).Delete(&models.Building{})
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": "true",
@@ -178,12 +181,19 @@ func (svc *AuthService) RemoveStreet(ctx *gin.Context) {
 // Admins don't need to be the ones who created the post to remove it
 // If admin authentication succeeded, no further checks needed.
 func (svc *AuthService) RemoveStreetAdmin(ctx *gin.Context) {
-	body := streetGetBody{}
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
+	var name string
+	if name = ctx.Query("name"); name == "" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
 		return
 	}
-	if result := svc.Handler.Database.Where("name = ?", body.Name).Delete(&models.Street{}); result.Error != nil {
+
+	var street models.Street
+	if resultTest := svc.Handler.Database.Where("name = ?", name).First(&street); resultTest.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found"})
+		return
+	}
+
+	if result := svc.Handler.Database.Where("name = ?", name).Delete(&models.Street{}); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found"})
 		return
 	}

@@ -12,13 +12,7 @@ export const SidebarDataGuest = [
     icon: <SiIcons.SiGooglestreetview />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-
     subNav: [
-      {
-        title: 'Create',
-        path: '/street/list',
-        icon: <IoIcons.IoIosPaper />
-      },
       {
         title: 'Read',
         path: '/street/read',
@@ -32,13 +26,7 @@ export const SidebarDataGuest = [
     icon: <GiIcons.GiPlainSquare />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-
     subNav: [
-      {
-        title: 'Create',
-        path: '/plot/create',
-        icon: <IoIcons.IoIosPaper />
-      },
       {
         title: 'Read',
         path: '/plot/read',
@@ -52,13 +40,7 @@ export const SidebarDataGuest = [
     icon: <AiIcons.AiFillHome />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-
     subNav: [
-      {
-        title: 'Create',
-        path: '/building/create',
-        icon: <IoIcons.IoIosPaper />
-      },
       {
         title: 'Read',
         path: '/building/read',

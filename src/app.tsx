@@ -21,8 +21,23 @@ import PageNotFound from "./components/404";
 import Home from "./components/home";
 import Sidebar from './components/sidebar';
 
-import StreetCreate from './components/streetCreate';
+import StreetCreate from './components/street/streetCreate';
+import StreetList from './components/street/streetList';
+import StreetRead from './components/street/streetRead';
+import StreetRemove from './components/street/streetRemove';
+import StreetUpdate from './components/street/streetUpdate';
 
+import PlotCreate from './components/plot/plotCreate';
+import PlotList from './components/plot/plotList';
+import PlotRead from './components/plot/plotRead';
+import PlotRemove from './components/plot/plotRemove';
+import PlotUpdate from './components/plot/plotUpdate';
+
+import BuildingCreate from './components/building/buildingCreate';
+import BuildingList from './components/building/buildingList';
+import BuildingRead from './components/building/buildingRead';
+import BuildingRemove from './components/building/buildingRemove';
+import BuildingUpdate from './components/building/buildingUpdate';
 
 import EventBus from "./global/eventBus";
 import Storage from "./user/userStorage";
@@ -211,23 +226,23 @@ class App extends Component<Props, State> {
 
               <Route path="/register" element={<Register />} />
 
-              <Route path="/street/list" element={<Home />} />
+              <Route path="/street/list" element={<StreetList />} />
               <Route path="/street/create" element={<StreetCreate />} />
-              <Route path="/street/read" element={<Home />} />
-              <Route path="/street/update" element={<Home />} />
-              <Route path="/street/delete" element={<Home />} />
+              <Route path="/street/read" element={<StreetRead />} />
+              <Route path="/street/update" element={<StreetUpdate />} />
+              <Route path="/street/delete" element={<StreetRemove />} />
 
-              <Route path="/plot/list" element={<Home />} />
-              <Route path="/plot/create" element={<Home />} />
-              <Route path="/plot/read" element={<Home />} />
-              <Route path="/plot/update" element={<Home />} />
-              <Route path="/plot/delete" element={<Home />} />
+              <Route path="/plot/list" element={<PlotList />} />
+              <Route path="/plot/create" element={<PlotCreate />} />
+              <Route path="/plot/read" element={<PlotRead />} />
+              <Route path="/plot/update" element={<PlotUpdate />} />
+              <Route path="/plot/delete" element={<PlotRemove />} />
 
-              <Route path="/building/list" element={<Home />} />
-              <Route path="/building/create" element={<Home />} />
-              <Route path="/building/read" element={<Home />} />
-              <Route path="/building/update" element={<Home />} />
-              <Route path="/building/delete" element={<Home />} />
+              <Route path="/building/list" element={<BuildingList />} />
+              <Route path="/building/create" element={<BuildingCreate />} />
+              <Route path="/building/read" element={<BuildingRead />} />
+              <Route path="/building/update" element={<BuildingUpdate />} />
+              <Route path="/building/delete" element={<BuildingRemove />} />
 
               <Route path="*" element={<PageNotFound />} />
             </Routes>
@@ -242,14 +257,14 @@ class App extends Component<Props, State> {
               }></Route>
               <Route path="/register" element={<Register />} />
 
-              <Route path="/street/list" element={<Home />} />
-              <Route path="/street/read" element={<Home />} />
+              <Route path="/street/list" element={<StreetList />} />
+              <Route path="/street/read" element={<StreetRead />} />
 
-              <Route path="/plot/list" element={<Home />} />
-              <Route path="/plot/read" element={<Home />} />
+              <Route path="/plot/list" element={<PlotList />} />
+              <Route path="/plot/read" element={<PlotRead />} />
 
-              <Route path="/building/list" element={<Home />} />
-              <Route path="/building/read" element={<Home />} />
+              <Route path="/building/list" element={<BuildingList />} />
+              <Route path="/building/read" element={<BuildingRead />} />
 
               <Route path="*" element={<PageNotFound />} />
             </Routes>

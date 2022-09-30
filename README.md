@@ -84,7 +84,7 @@ http://localhost:9090/api/user/street/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X POST 'http://localhost:9090/api/user/street/' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
@@ -146,14 +146,8 @@ http://localhost:9090/api/street/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET '' \
+curl -X GET 'http://127.0.0.1:9090/api/street?name=savanoriu+prospektas' \
 -H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "name":"partizanu g.50"
-}
-'
 ```
 
 ##### Pavyzdinis atsakymas
@@ -201,9 +195,8 @@ http://localhost:9090/api/street/all
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET '' \
--H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
+curl -X GET 'http://localhost:9090/api/street/all' \
+-H 'Accept: application/json'
 ```
 
 ##### Pavyzdinis atsakymas
@@ -276,7 +269,7 @@ http://localhost:9090/api/user/street/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X PUT '' \
+curl -X PUT 'http://localhost:9090/api/user/street/' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
@@ -316,7 +309,7 @@ Atsako kodas: 200
 ##### URL
 
 ```
-http://localhost:9090/api/user/street/remove
+http://127.0.0.1:9090/api/user/street/remove
 ```
 
 ##### Resurso informacija
@@ -336,14 +329,9 @@ http://localhost:9090/api/user/street/remove
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X DELETE 'http://localhost:9090/api/user/street/remove?name=savanoriu+prospektas' \
 -H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "name":"partizanu g.50"
-}
-'
+-H "Authorization: Bearer ${TOKEN}"
 ```
 
 ##### Pavyzdinis atsakymas
@@ -384,14 +372,9 @@ http://localhost:9090/api/admin/street/remove
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X DELETE 'http://localhost:9090/api/admin/street/remove?name=savanoriu+prospektas' \
 -H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "name":"pavyzdys"
-}
-'
+-H "Authorization: Bearer ${TOKEN}"
 ```
 
 ##### Pavyzdinis atsakymas
@@ -435,7 +418,7 @@ http://localhost:9090/api/user/plot/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X POST 'http://localhost:9090/api/user/plot/' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
@@ -496,15 +479,8 @@ http://localhost:9090/api/plot/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET '' \
--H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "streetName":"partizanu g.50",
-    "lotNo":110
-}
-'
+curl -X GET 'http://127.0.0.1:9090/api/plot?streetName=savanoriu+prospektas&lotNo=1' \
+-H 'Accept: application/json'
 ```
 
 ##### Pavyzdinis atsakymas
@@ -551,9 +527,8 @@ http://localhost:9090/api/plot/all
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET '' \
--H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
+curl -X GET 'http://localhost:9090/api/plot/all' \
+-H 'Accept: application/json'
 ```
 
 ##### Pavyzdinis atsakymas
@@ -633,7 +608,7 @@ http://localhost:9090/api/user/plot
 ##### Pavyzdinė užklausa
 
 ```
-curl -X PUT '' \
+curl -X PUT 'http://localhost:9090/api/user/plot' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
@@ -693,15 +668,9 @@ http://localhost:9090/api/user/plot/remove
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X DELETE 'http://127.0.0.1:9090/api/user/plot/remove?streetName=savanoriu+prospektas&lotNo=1' \
 -H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "streetName":"partizanu g.50",
-    "lotNo":110
-}
-'
+-H "Authorization: Bearer ${TOKEN}"
 ```
 
 ##### Pavyzdinis atsakymas
@@ -725,7 +694,7 @@ Atsako kodas: 200
 ##### URL
 
 ```
-http://localhost:9090/api/admin/plot
+http://localhost:9090/api/admin/plot/remove
 ```
 
 ##### Resurso informacija
@@ -746,15 +715,9 @@ http://localhost:9090/api/admin/plot
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X DELETE 'http://127.0.0.1:9090/api/admin/plot/remove?streetName=savanoriu+prospektas&lotNo=1' \
 -H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "streetName":"partizanu g.50",
-    "lotNo":110
-}
-'
+-H "Authorization: Bearer ${TOKEN}"
 ```
 
 ##### Pavyzdinis atsakymas
@@ -800,7 +763,7 @@ http://localhost:9090/api/user/building
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X POST 'http://localhost:9090/api/user/building' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
@@ -868,16 +831,8 @@ http://localhost:9090/api/building/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET '' \
--H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "streetName":"partizanu gatve 50",
-    "lotNo":110,
-    "streetNumber":"25A"
-}
-'
+curl -X GET 'http://127.0.0.1:9090/api/building?streetName=savanoriu+prospektas&lotNo=1&streetNumber=1' \
+-H 'Accept: application/json'
 ```
 
 ##### Pavyzdinis atsakymas
@@ -915,9 +870,8 @@ http://localhost:9090/api/building/all
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET '' \
--H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
+curl -X GET 'http://localhost:9090/api/building/all' \
+-H 'Accept: application/json'
 ```
 
 ##### Pavyzdinis atsakymas
@@ -988,7 +942,7 @@ http://localhost:9090/api/user/building
 ##### Pavyzdinė užklausa
 
 ```
-curl -X PUT '' \
+curl -X PUT 'http://localhost:9090/api/user/building' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
@@ -1053,16 +1007,9 @@ http://localhost:9090/api/user/building/remove
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X DELETE 'http://127.0.0.1:9090/api/user/building/remove?streetName=savanoriu+prospektas&lotNo=1&streetNumber=1' \
 -H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "streetName":"partizanu gatve 50",
-    "lotNo":110,
-    "streetNumber":"25A"
-}
-'
+-H "Authorization: Bearer ${TOKEN}"
 ```
 
 ##### Pavyzdinis atsakymas
@@ -1083,7 +1030,7 @@ Atsako kodas: 200
 ##### URL
 
 ```
-http://localhost:9090/api/admin/building
+http://localhost:9090/api/admin/building/remove
 ```
 
 ##### Resurso informacija
@@ -1105,16 +1052,9 @@ http://localhost:9090/api/admin/building
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST '' \
+curl -X POST 'http://127.0.0.1:9090/api/admin/building/remove?streetName=savanoriu+prospektas&lotNo=1&streetNumber=1' \
 -H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}" \
--d '
-{
-    "streetName":"partizanu gatve 50",
-    "lotNo":110,
-    "streetNumber":"25A"
-}
-'
+-H "Authorization: Bearer ${TOKEN}"
 ```
 
 ##### Pavyzdinis atsakymas

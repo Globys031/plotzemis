@@ -2,8 +2,6 @@
 export const errorHandler = (error: { request: any; response: any; }) => {
   const { request, response } = error;
 
-  console.log("errorHandler", response)
-
   if (response.data) {
     if (response.data.error) {
       return {

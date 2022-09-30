@@ -55,23 +55,23 @@ func RegisterRoutes(svc *AuthService) *gin.Engine {
 
 	routesUser.POST("/building", svc.CreateBuilding)
 	routesUser.PUT("/building", svc.UpdateBuilding)
-	routesUser.POST("/building/remove", svc.RemoveBuilding)
+	routesUser.DELETE("/building/remove", svc.RemoveBuilding)
 
 	routesUser.POST("/street", svc.CreateStreet)
 	routesUser.PUT("/street", svc.UpdateStreet)
-	routesUser.POST("/street/remove", svc.RemoveStreet)
+	routesUser.DELETE("/street/remove", svc.RemoveStreet)
 
 	routesUser.POST("/plot", svc.CreatePlot)
 	routesUser.PUT("/plot", svc.UpdatePlot)
-	routesUser.POST("/plot/remove", svc.RemovePlot)
+	routesUser.DELETE("/plot/remove", svc.RemovePlot)
 
 	// Needs admin level authentication
 	routesAdmin := router.Group("/api/admin")
 	routesAdmin.Use(svc.AuthRequiredAdmin)
-	routesAdmin.POST("/userpost/remove", svc.RemoveUserPostAdmin)
-	routesAdmin.POST("/building/remove", svc.RemoveBuildingAdmin)
-	routesAdmin.POST("/plot/remove", svc.RemovePlotAdmin)
-	routesAdmin.POST("/street/remove", svc.RemoveStreetAdmin)
+	routesAdmin.DELETE("/userpost/remove", svc.RemoveUserPostAdmin)
+	routesAdmin.DELETE("/building/remove", svc.RemoveBuildingAdmin)
+	routesAdmin.DELETE("/plot/remove", svc.RemovePlotAdmin)
+	routesAdmin.DELETE("/street/remove", svc.RemoveStreetAdmin)
 
 	return router
 }

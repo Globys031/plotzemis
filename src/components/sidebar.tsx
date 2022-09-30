@@ -89,13 +89,10 @@ export default class Sidebar extends Component<Props, State> {
 
             {this.context.user ? ( 
               SidebarDataUser.map((item, index) => {
-                console.log("ieina i user")
                 return <SubMenu item={item} key={index} />;
               })
             ) : (
               SidebarDataGuest.map((item, index) => {
-                console.log("ieina i guest")
-                console.log(this.context.user)
                 return <SubMenu item={item} key={index} />;
               })
             )}
