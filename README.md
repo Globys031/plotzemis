@@ -49,6 +49,42 @@ Aplikacija bei jos duomenų bazė talpinama į Azure. Iš „Plotzemis HTML“ p
 
 ## Naudotojo sąsajos projektas
 
+### Login
+
+Prisijungus, "Login" mygtukas pradeda suktis ir po dviejų sekundžių nukreipia į vartotojo profilio puslapį.
+![Screenshot](docImages/login.jpg)
+
+### Register
+
+`Admin` vartotojas gali sukurti daugiau skirtingas teises turinčių vartotojų.
+![Screenshot](docImages/Register.jpg)
+
+### List
+
+Sąrašas pateikiamas lentelės forma.
+![Screenshot](docImages/list.jpg)
+
+### Create
+
+Atliekama įvedamų duomenų validacija.
+![Screenshot](docImages/create.jpg)
+
+### Read
+
+Nuskaičius įrašą, šis pateikiamas lentelės forma.
+![Screenshot](docImages/Read.jpg)
+
+### Update
+
+Įrašus gali keisti tik vartotojas, kuris juos sukūrė.
+![Screenshot](docImages/Update.jpg)
+
+### Remove
+
+Įrašus naikinti gali administratoriai ir vartotojai, kurie juos sukūrė.
+![Screenshot](docImages/Remove.jpg)
+
+
 ## API specifikacija
 
 Kiekvienas api POST/PUT metodas papildomai atlieka duomenų validaciją, kad neužpildytų duomenų bazės tuščiais duomenimis.
@@ -1072,7 +1108,6 @@ Atsako kodas: 401
 - Būtina duomenų validacija backend'o pusėje. Neužtenka pasitikėti, jog frontend'o pusės perduodami duomenys bus tinkami.
 - Atsako kodai aiškiai pateikia, kokia galima problema, net jeigu negrąžinamas užklausos kūnas
 - Frontend'o aplikacija turi gebėti dinamiškai prisitaikyti prie įvairių įrenginio apribojimų. Pakeitus naršyklės lango dydį, duomenys privalo išlikti įskaitomi.
-- Wireframe'ai palengvina frontend dalies projektavimą
 
 ## Šaltiniai
 
