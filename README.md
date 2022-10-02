@@ -1121,6 +1121,7 @@ Atsako kodas: 401
 - Būtina duomenų validacija backend'o pusėje. Neužtenka pasitikėti, jog frontend'o pusės perduodami duomenys bus tinkami.
 - Atsako kodai aiškiai pateikia, kokia galima problema, net jeigu negrąžinamas užklausos kūnas
 - Frontend'o aplikacija turi gebėti dinamiškai prisitaikyti prie įvairių įrenginio apribojimų. Pakeitus naršyklės lango dydį, duomenys privalo išlikti įskaitomi.
+- Patogiau aplikaciją įkelti į cloud'ą, jeigu ji supakuota į docker konteinerį. Arba jeigu dar kitaip galima suautomatizuoti programos paleidimą.
 
 ## Šaltiniai
 

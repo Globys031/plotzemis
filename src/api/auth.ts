@@ -9,7 +9,7 @@ class Authentication {
   private host : string;
 
   constructor() {
-    this.host = process.env.REACT_APP_USE_TLS ? "http://127.0.0.1:" + process.env.REACT_APP_BACKEND_PORT : "https://127.0.0.1:" + process.env.REACT_APP_BACKEND_PORT;
+    this.host = process.env.REACT_APP_USE_TLS ? "http://" + process.env.REACT_APP_BACKEND_HOST + ":" + process.env.REACT_APP_BACKEND_PORT : "https://127.0.0.1:" + process.env.REACT_APP_BACKEND_PORT;
 
     // For all grpc methods, wait 5 seconds before timing out
     const currentDate : Date = new Date();

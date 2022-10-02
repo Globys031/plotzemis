@@ -15,7 +15,8 @@ type Config struct {
 
 	JWT_secret_key string `mapstructure:"JWT_SECRET_KEY"`
 
-	Backend_port int `mapstructure:"BACKEND_PORT"`
+	Backend_port int    `mapstructure:"BACKEND_PORT"`
+	Backend_host string `mapstructure:"BACKEND_HOST"`
 }
 
 func LoadConfig() (c Config, err error) {
