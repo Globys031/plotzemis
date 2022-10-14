@@ -3,14 +3,15 @@ package models
 // https://www.aruodas.lt/butu-nuoma-vilniuje-kalnenuose-guriu-g-nuomoju-erdvu-dvieju-kambariu-buta-su-baldais-4-1175231/
 
 type Building struct {
-	Id     int64 `gorm:"primaryKey" `
-	UserId int64 `json:"userId"`
+	Id       int64 `gorm:"primaryKey" `
+	UserId   int64 `json:"userId"`
+	StreetId int64 `json:"streetId"`
+	PlotId   int64 `json:"plotId"`
 
-	// street -> plot -> building
-	// aka streetName -> lotNo -> streetNumber
-	StreetName   string `json:"streetName" validate:"required,max=100,min=4"`
 	LotNo        int64  `json:"lotNo" validate:"required,gt=0,lt=99999"`
 	StreetNumber string `json:"streetNumber" validate:"required,max=10,min=1"`
+	// pvz 03154
+	PostalCode string `json:"postalCode" validate:"required,len=5"`
 
 	// Pvz butas, namas, garazas, aikstele
 	Type string `json:"type" validate:"required,max=20,min=3"`

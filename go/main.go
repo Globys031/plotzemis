@@ -25,7 +25,7 @@ func main() {
 		log.Fatalln("Failed at config", err)
 	}
 	port := config.Backend_port
-	// host := config.Backend_host
+	host := config.Backend_host
 	//////////////////////////
 
 	//////////////////////////
@@ -52,8 +52,8 @@ func main() {
 	// UNCOMMENT THIS LINE WHEN DEVELOPING LOCALLY
 	// Leaving this as is for easier setup on the cloud. The other line
 	// makes it so that go listen on all interfaces
-	// Addr := fmt.Sprintf("%s:%d", host, port)
-	Addr := fmt.Sprintf(":%d", port)
+	Addr := fmt.Sprintf("%s:%d", host, port)
+	// Addr := fmt.Sprintf(":%d", port)
 	if *enableTls {
 		if err := router.RunTLS(Addr, *tlsCertFilePath, *tlsKeyFilePath); err != nil {
 			fmt.Errorf("failed starting http2 backend server: %v", err)

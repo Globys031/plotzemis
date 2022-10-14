@@ -27,51 +27,29 @@ func RegisterRoutes(svc *AuthService) *gin.Engine {
 	// Each route function decides where to use authentication middleware (if resource should be protected)
 	// inside the function itself
 
-	// Doesn't need authentication
-	routesGuest := router.Group("/api")
-	routesGuest.POST("/register", svc.Register)
-	routesGuest.POST("/login", svc.Login)
+	// Had to get rid of middleware and instead will have to call it manually now.
+	routes := router.Group("/api")
+	routes.POST("/register", svc.Register) // No auth
+	routes.POST("/login", svc.Login)       // No auth
+	routes.POST("/logout", svc.Logout)     // Yes auth
 
-	routesGuest.GET("/userpost", svc.ReadUserPost)
-	routesGuest.GET("/userpost/all", svc.ReadListUserPost)
+	routes.GET("/street/", svc.ReadListStreet)           // No auth (Get all streets)
+	routes.GET("/street/:streetID", svc.ReadStreet)      // No auth
+	routes.POST("/street", svc.CreateStreet)             // Yes auth
+	routes.PUT("/street/:streetID", svc.UpdateStreet)    // Yes auth
+	routes.DELETE("/street/:streetID", svc.RemoveStreet) // Yes auth + special use if admin
 
-	routesGuest.GET("/building", svc.ReadBuilding)
-	routesGuest.GET("/building/all", svc.ReadListBuilding)
+	routes.GET("/street/:streetID/", svc.ReadListPlot)         // No auth   (Get all plots in that street)
+	routes.GET("/street/:streetID/:plotID", svc.ReadPlot)      // No auth
+	routes.POST("/street/:streetID", svc.CreatePlot)           // Yes auth
+	routes.PUT("/street/:streetID/:plotID", svc.UpdatePlot)    // Yes auth
+	routes.DELETE("/street/:streetID/:plotID", svc.RemovePlot) // Yes auth + special use if admin
 
-	routesGuest.GET("/street", svc.ReadStreet)
-	routesGuest.GET("/street/all", svc.ReadListStreet)
-
-	routesGuest.GET("/plot", svc.ReadPlot)
-	routesGuest.GET("/plot/all", svc.ReadListPlot)
-
-	// Needs regular user authentication
-	routesUser := router.Group("/api/user")
-	routesUser.Use(svc.AuthRequiredUser)
-	routesUser.POST("/logout", svc.Logout)
-
-	routesUser.POST("/userpost", svc.CreateUserPost)
-	routesUser.PUT("/userpost", svc.UpdateUserPost)
-	routesUser.POST("/userpost/remove", svc.RemoveUserPost)
-
-	routesUser.POST("/building", svc.CreateBuilding)
-	routesUser.PUT("/building", svc.UpdateBuilding)
-	routesUser.DELETE("/building/remove", svc.RemoveBuilding)
-
-	routesUser.POST("/street", svc.CreateStreet)
-	routesUser.PUT("/street", svc.UpdateStreet)
-	routesUser.DELETE("/street/remove", svc.RemoveStreet)
-
-	routesUser.POST("/plot", svc.CreatePlot)
-	routesUser.PUT("/plot", svc.UpdatePlot)
-	routesUser.DELETE("/plot/remove", svc.RemovePlot)
-
-	// Needs admin level authentication
-	routesAdmin := router.Group("/api/admin")
-	routesAdmin.Use(svc.AuthRequiredAdmin)
-	routesAdmin.DELETE("/userpost/remove", svc.RemoveUserPostAdmin)
-	routesAdmin.DELETE("/building/remove", svc.RemoveBuildingAdmin)
-	routesAdmin.DELETE("/plot/remove", svc.RemovePlotAdmin)
-	routesAdmin.DELETE("/street/remove", svc.RemoveStreetAdmin)
+	routes.GET("/street/:streetID/:plotID/", svc.ReadListBuilding)             // No auth
+	routes.GET("/street/:streetID/:plotID/:buildingID", svc.ReadBuilding)      // No auth
+	routes.POST("/street/:streetID/:plotID", svc.CreateBuilding)               // Yes auth
+	routes.PUT("/street/:streetID/:plotID/:buildingID", svc.UpdateBuilding)    // Yes auth
+	routes.DELETE("/street/:streetID/:plotID/:buildingID", svc.RemoveBuilding) // Yes auth + special use if admin
 
 	return router
 }

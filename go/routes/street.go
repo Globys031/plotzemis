@@ -5,30 +5,28 @@ package routes
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/Globys031/plotzemis/go/db/models"
 )
 
-type streetGetBody struct {
-	Name string `json:"name"`
-}
-
 // This one doesn't require any field to filled out.
 // But we still need to validate that the data provided fits requirements
 // Additionally takes an array of fields to know which ones should be updated
 type streetUpdateBody struct {
-	NewName      string `json:"newName" validate:"max=100,min=4"`
-	OldName      string `json:"oldName" validate:"max=100,min=4"`
+	Name         string `json:"name" validate:"max=100,min=4"`
 	City         string `json:"city" validate:"max=20,min=4"`
 	District     string `json:"district" validate:"max=100,min=4"`
-	PostalCode   string `json:"postalCode" validate:"len=5"`
 	AddressCount int64  `json:"addressCount" validate:"gt=0,lt=9999"`
 	StreetLength string `json:"streetLength" validate:"max=40,min=2"`
 }
 
 func (svc *AuthService) CreateStreet(ctx *gin.Context) {
+	if svc.AuthRequired(ctx) == nil {
+		return
+	}
 	body := models.Street{}
 
 	if err := ctx.BindJSON(&body); err != nil {
@@ -60,36 +58,52 @@ func (svc *AuthService) CreateStreet(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusCreated, gin.H{
-		"success": "true",
-		"result":  body,
+		"result": body,
 	})
 }
 
+// CRUD GET function
 func (svc *AuthService) ReadStreet(ctx *gin.Context) {
-	// jsonData, _ := ioutil.ReadAll(ctx.Request.Body)
-	// fmt.Println(string(jsonData))
-
-	var name string
-	if name = ctx.Query("name"); name == "" {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
+	var street models.Street
+	if street = svc.getStreet(ctx); street.Id == 0 {
 		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": street,
+	})
+}
+
+// This function can be reused by other objects in the hierarchy
+func (svc *AuthService) getStreet(ctx *gin.Context) models.Street {
+	var streetId int64
+	var err error
+	if streetId, err = strconv.ParseInt(ctx.Param("streetID"), 0, 64); err != nil || streetId == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Either couldn't get streetID from api request or streetId = 0"})
+		return models.Street{}
 	}
 
 	var street models.Street
-	if result := svc.Handler.Database.Where(&models.Street{Name: name}).First(&street); result.Error != nil {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found"})
-		return
+	if result := svc.Handler.Database.Where(&models.Street{Id: streetId}).First(&street); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this Id not found"})
+		return models.Street{}
 	}
-	ctx.JSON(http.StatusCreated, gin.H{
-		"success": "true",
-		"result":  street,
-	})
+	return street
 }
 
 func (svc *AuthService) UpdateStreet(ctx *gin.Context) {
+	if svc.AuthRequired(ctx) == nil {
+		return
+	}
+	var streetId int64
+	var err error
+	if streetId, err = strconv.ParseInt(ctx.Param("streetID"), 0, 64); err != nil || streetId == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Either couldn't get streetID from api request or streetId = 0"})
+		return
+	}
+
 	// Bind post body and validate
 	body := streetUpdateBody{}
-	if err := ctx.BindJSON(&body); err != nil || body.OldName == "" {
+	if err := ctx.BindJSON(&body); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect payload format"})
 		return
 	}
@@ -98,10 +112,9 @@ func (svc *AuthService) UpdateStreet(ctx *gin.Context) {
 
 	// Get info from street based on name
 	var street models.Street
-	if result := svc.Handler.Database.Where(&models.Street{Name: body.OldName, UserId: userId.(int64)}).First(&street); result.Error != nil {
+	if result := svc.Handler.Database.Where(&models.Street{Id: streetId, UserId: userId.(int64)}).First(&street); result.Error != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-			"error":       "Street with this name not found or your userId doesn't match that of the post's creator",
-			"serverError": result.Error.Error(),
+			"error": "Street with this Id not found or your userId doesn't match that of the post's creator",
 		})
 		return
 	}
@@ -116,11 +129,8 @@ func (svc *AuthService) UpdateStreet(ctx *gin.Context) {
 	if body.District != "" {
 		street.District = body.District
 	}
-	if body.NewName != "" {
-		street.Name = body.NewName
-	}
-	if body.PostalCode != "" {
-		street.PostalCode = body.PostalCode
+	if body.Name != "" {
+		street.Name = body.Name
 	}
 	if body.StreetLength != "" {
 		street.StreetLength = body.StreetLength
@@ -141,16 +151,24 @@ func (svc *AuthService) UpdateStreet(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{
-		"success": "true",
-		"result":  street,
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": street,
 	})
 }
 
 func (svc *AuthService) RemoveStreet(ctx *gin.Context) {
-	var name string
-	if name = ctx.Query("name"); name == "" {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
+	claims := svc.AuthRequired(ctx)
+	if claims == nil {
+		return
+	}
+	var streetId int64
+	var err error
+	if streetId, err = strconv.ParseInt(ctx.Param("streetID"), 0, 64); err != nil || streetId == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Either couldn't get streetID from api request or streetId = 0"})
+		return
+	}
+	if claims.Role == "ADMIN" {
+		svc.removeStreetAdmin(ctx, streetId)
 		return
 	}
 
@@ -159,47 +177,45 @@ func (svc *AuthService) RemoveStreet(ctx *gin.Context) {
 	// Quick and dirty work-around because remove seems to always return successful even
 	// if there was no element to be found.
 	var street models.Street
-	if resultTest := svc.Handler.Database.Where("name = ? AND user_id = ?", name, userId.(int64)).First(&street); resultTest.Error != nil {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found  or your userId doesn't match that of the post's creator"})
+
+	if resultTest := svc.Handler.Database.Where("id = ? AND user_id = ?", streetId, userId.(int64)).First(&street); resultTest.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Street with this id not found  or your userId doesn't match that of the post's creator"})
 		return
 	}
 
-	if result := svc.Handler.Database.Where("name = ? AND user_id = ?", name, userId.(int64)).Delete(&models.Street{}); result.Error != nil {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found  or your userId doesn't match that of the post's creator"})
+	if result := svc.Handler.Database.Where("id = ? AND user_id = ?", streetId, userId.(int64)).Delete(&models.Street{}); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Couldn't delete street with this id not found  or your userId doesn't match that of the post's creator"})
 		return
 	}
 
-	svc.Handler.Database.Where("street_name = ?", name).Delete(&models.Plot{})
-	svc.Handler.Database.Where("street_name = ?", name).Delete(&models.Building{})
+	// Cia dar sugrizt...
+	svc.Handler.Database.Where("street_id = ?", streetId).Delete(&models.Plot{})
+	svc.Handler.Database.Where("street_id = ?", streetId).Delete(&models.Building{})
 
-	ctx.JSON(http.StatusCreated, gin.H{
-		"success": "true",
-		"result":  "Street as well as plots and buildings associated with it have been removed",
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": "Street as well as plots and buildings associated with it have been removed",
 	})
 }
 
 // Admins don't need to be the ones who created the post to remove it
 // If admin authentication succeeded, no further checks needed.
-func (svc *AuthService) RemoveStreetAdmin(ctx *gin.Context) {
-	var name string
-	if name = ctx.Query("name"); name == "" {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "incorrect request format"})
-		return
-	}
-
+func (svc *AuthService) removeStreetAdmin(ctx *gin.Context, streetId int64) {
+	fmt.Println("street_id", streetId)
 	var street models.Street
-	if resultTest := svc.Handler.Database.Where("name = ?", name).First(&street); resultTest.Error != nil {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found"})
+	if resultTest := svc.Handler.Database.Where("id = ?", streetId).First(&street); resultTest.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this Id not found"})
 		return
 	}
 
-	if result := svc.Handler.Database.Where("name = ?", name).Delete(&models.Street{}); result.Error != nil {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Street with this name not found"})
+	if result := svc.Handler.Database.Where("id = ?", streetId).Delete(&models.Street{}); result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Couldn't delete street with this Id not found"})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{
-		"success": "true",
-		"result":  "Post removed",
+	svc.Handler.Database.Where("street_id = ?", streetId).Delete(&models.Plot{})
+	svc.Handler.Database.Where("street_id = ?", streetId).Delete(&models.Building{})
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": "Street as well as plots and buildings associated with it have been removed",
 	})
 }
 
@@ -211,9 +227,8 @@ func (svc *AuthService) ReadListStreet(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{
-		"success": "true",
-		"result":  streets,
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": streets,
 	})
 }
 
@@ -227,4 +242,14 @@ func validateStreetDataFormat(street *models.Street, svc *AuthService) error {
 		fmt.Println(err)
 	}
 	return err
+}
+
+func getStreetId(ctx *gin.Context) int64 {
+	var streetId int64
+	var err error
+	if streetId, err = strconv.ParseInt(ctx.Param("streetID"), 0, 64); err != nil || streetId == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Either couldn't get streetID from api request or streetId = 0"})
+		return streetId
+	}
+	return streetId
 }

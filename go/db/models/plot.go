@@ -7,10 +7,10 @@ package models
 type Plot struct {
 	// Palikt Id for convenience sake. Tiesiog dedant paziuret ar jau toks
 	// lot number egzistuoja ar ne
-	Id         int64  `gorm:"primaryKey" ` // Automatically incremented by database
-	UserId     int64  `json:"userId"`
-	StreetName string `json:"streetName" validate:"required,max=100,min=4"`
-	LotNo      int64  `json:"lotNo" validate:"required,gt=0,lt=10000"`
+	Id         int64 `gorm:"primaryKey" ` // Automatically incremented by database
+	UserId     int64 `json:"userId"`
+	StreetId   int64 `json:"streetId"`
+	LotNo      int64 `json:"lotNo" validate:"required,gt=0,lt=10000"`
 	// arais
 	AreaSize int64 `json:"areaSize" validate:"required,gt=0,lt=10000"`
 	// [Sandėlis, Gyvenamasis, agrikultūrinis, miškininkystės]

@@ -103,8 +103,7 @@ func (svc *AuthService) Login(ctx *gin.Context) {
 
 	token, _ := svc.Jwt.GenerateToken(user)
 	ctx.JSON(http.StatusOK, gin.H{
-		"token":       token,
-		"userDetails": user,
+		"token": token,
 	})
 }
 
@@ -121,7 +120,7 @@ func (svc *AuthService) Logout(ctx *gin.Context) {
 func (svc *AuthService) registerAdminAuthSuccess(ctx *gin.Context, body models.User) bool {
 	var adminUser models.User
 	if body.Role == "ADMIN" {
-		svc.AuthRequiredAdmin(ctx)
+		svc.AuthRequired(ctx)
 		userId, _ := ctx.Get("userId") // Get userId set in middleware
 		fmt.Println(userId)
 		if userId == nil {
