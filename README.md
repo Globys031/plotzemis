@@ -104,12 +104,12 @@ Kiekvienas api POST/PUT metodas papildomai atlieka duomenų validaciją, kad neu
 
 ### street
 
-#### /api/user/street POST
+#### /api/street POST
 
 ##### URL
 
 ```
-http://localhost:9090/api/user/street/
+http://localhost:9090/api/street
 ```
 
 ##### Resurso informacija
@@ -133,7 +133,7 @@ http://localhost:9090/api/user/street/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST 'http://localhost:9090/api/user/street/' \
+curl -X POST 'http://localhost:9090/api/street' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
@@ -170,12 +170,12 @@ curl -X POST 'http://localhost:9090/api/user/street/' \
 
 Atsako kodas: 200
 
-#### /api/street GET
+#### /api/street/:streetID GET
 
 ##### URL
 
 ```
-http://localhost:9090/api/street/
+http://localhost:9090/api/street/:streetID
 ```
 
 ##### Resurso informacija
@@ -195,7 +195,7 @@ http://localhost:9090/api/street/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET 'http://127.0.0.1:9090/api/street?name=savanoriu+prospektas' \
+curl -X GET 'http://127.0.0.1:9090/api/street/1' \
 -H 'Accept: application/json' \
 ```
 
@@ -219,12 +219,12 @@ curl -X GET 'http://127.0.0.1:9090/api/street?name=savanoriu+prospektas' \
 
 Atsako kodas: 200
 
-#### /api/street/all GET
+#### /api/street/ GET
 
 ##### URL
 
 ```
-http://localhost:9090/api/street/all
+http://localhost:9090/api/street/
 ```
 
 ##### Resurso informacija
@@ -244,7 +244,7 @@ http://localhost:9090/api/street/all
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET 'http://localhost:9090/api/street/all' \
+curl -X GET 'http://localhost:9090/api/street/' \
 -H 'Accept: application/json'
 ```
 
@@ -290,7 +290,7 @@ curl -X GET 'http://localhost:9090/api/street/all' \
 
 Atsako kodas: 200
 
-#### /api/user/street PUT
+#### /api/street/:streetID PUT
 
 ##### URL
 
@@ -318,13 +318,12 @@ http://localhost:9090/api/user/street/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X PUT 'http://localhost:9090/api/user/street/' \
+curl -X PUT 'http://localhost:9090/api/street/1' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
 {
-    "oldName":"savanoriu prospektas",
-    "newName":"Vilniaus gatve",
+    "name":"Vilniaus gatve",
     "postalCode":"12345",
     "addressCount": 101
 }
@@ -353,12 +352,12 @@ curl -X PUT 'http://localhost:9090/api/user/street/' \
 
 Atsako kodas: 200
 
-#### /api/user/street/remove REMOVE
+#### /api/street/:streetID REMOVE
 
 ##### URL
 
 ```
-http://127.0.0.1:9090/api/user/street/remove
+http://127.0.0.1:9090/api/street/:streetID
 ```
 
 ##### Resurso informacija
@@ -378,7 +377,7 @@ http://127.0.0.1:9090/api/user/street/remove
 ##### Pavyzdinė užklausa
 
 ```
-curl -X DELETE 'http://localhost:9090/api/user/street/remove?name=savanoriu+prospektas' \
+curl -X DELETE 'http://localhost:9090/api/street/1' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}"
 ```
@@ -396,55 +395,14 @@ curl -X DELETE 'http://localhost:9090/api/user/street/remove?name=savanoriu+pros
 
 Atsako kodas: 200
 
-#### /api/admin/street/remove REMOVE
-
-##### URL
-
-```
-http://localhost:9090/api/admin/street/remove
-```
-
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | taip       |
-| Reikalauja administratoriaus teisių?   | taip        |
-| Gali vykdyti tik savo įrašams?   | ne        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-| name | taip | gatvės pavadinimas |  | partizanu g.50 |
-
-##### Pavyzdinė užklausa
-
-```
-curl -X DELETE 'http://localhost:9090/api/admin/street/remove?name=savanoriu+prospektas' \
--H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}"
-```
-
-##### Pavyzdinis atsakymas
-
-```
-{
-    "error": " Authorization header is missing or there's no bearer"
-}
-```
-
-Atsako kodas: 401
-
-
 ### Plot
 
-#### /api/user/plot POST
+#### /api/street/:streetID POST
 
 ##### URL
 
 ```
-http://localhost:9090/api/user/plot/
+http://localhost:9090/api/street/:streetID
 ```
 
 ##### Resurso informacija
@@ -458,7 +416,6 @@ http://localhost:9090/api/user/plot/
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
 | lotNo | taip | ploto numeris | 0 | 52 |
 | areaSize | taip | žemės plotas arais | 0 | 20 |
 | purpose | taip | ploto paskirtis. Gali būti sandėliss/gyvenamasis/agrikultūrinis/miškininkystės |  | agrikultūrinis |
@@ -467,12 +424,11 @@ http://localhost:9090/api/user/plot/
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST 'http://localhost:9090/api/user/plot/' \
+curl -X POST 'http://localhost:9090/api/street/1' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
 {
-    "streetName":"partizanu g.50",
     "lotNo":110,
     "areaSize":5,
     "purpose":"Gyvenamasis",
@@ -490,7 +446,7 @@ curl -X POST 'http://localhost:9090/api/user/plot/' \
     "result": {
         "Id": 1,
         "userId": 1,
-        "streetName": "partizanu g.50",
+        "streetId": 1,
         "lotNo": 110,
         "areaSize": 5,
         "purpose": "Gyvenamasis",
@@ -502,12 +458,12 @@ curl -X POST 'http://localhost:9090/api/user/plot/' \
 
 Atsako kodas: 200
 
-#### /api/plot GET
+#### /api/street/:streetID/:plotID GET
 
 ##### URL
 
 ```
-http://localhost:9090/api/plot/
+http://localhost:9090/api/street/:streetID/:plotID
 ```
 
 ##### Resurso informacija
@@ -522,13 +478,11 @@ http://localhost:9090/api/plot/
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
-| lotNo | taip | ploto numeris | 0 | 52 |
 
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET 'http://127.0.0.1:9090/api/plot?streetName=savanoriu+prospektas&lotNo=1' \
+curl -X GET 'http://127.0.0.1:9090/api/street/12/7' \
 -H 'Accept: application/json'
 ```
 
@@ -537,9 +491,9 @@ curl -X GET 'http://127.0.0.1:9090/api/plot?streetName=savanoriu+prospektas&lotN
 ```
 {
     "result": {
-        "Id": 1,
+        "Id": 7,
         "userId": 1,
-        "streetName": "partizanu g.50",
+        "streetId": 12,
         "lotNo": 110,
         "areaSize": 5,
         "purpose": "Gyvenamasis",
@@ -551,12 +505,12 @@ curl -X GET 'http://127.0.0.1:9090/api/plot?streetName=savanoriu+prospektas&lotN
 
 Atsako kodas: 200
 
-#### /api/plot/all GET
+#### /api/street/:streetID/ GET
 
 ##### URL
 
 ```
-http://localhost:9090/api/plot/all
+http://localhost:9090/api/street/:streetID/
 ```
 
 ##### Resurso informacija
@@ -576,7 +530,7 @@ http://localhost:9090/api/plot/all
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET 'http://localhost:9090/api/plot/all' \
+curl -X GET 'http://localhost:9090/api/street/7/' \
 -H 'Accept: application/json'
 ```
 
@@ -588,7 +542,7 @@ curl -X GET 'http://localhost:9090/api/plot/all' \
         {
             "Id": 1,
             "userId": 1,
-            "streetName": "partizanu g.50",
+            "streetId": 7,
             "lotNo": 110,
             "areaSize": 5,
             "purpose": "Gyvenamasis",
@@ -597,7 +551,7 @@ curl -X GET 'http://localhost:9090/api/plot/all' \
         {
             "Id": 2,
             "userId": 1,
-            "streetName": "partizanu gatve",
+            "streetId": 7,
             "lotNo": 8,
             "areaSize": 20,
             "purpose": "Gyvenamasis",
@@ -606,7 +560,7 @@ curl -X GET 'http://localhost:9090/api/plot/all' \
         {
             "Id": 3,
             "userId": 1,
-            "streetName": "partizanu gatve",
+            "streetId": 7,
             "lotNo": 52,
             "areaSize": 20,
             "purpose": "sandėlis",
@@ -615,7 +569,7 @@ curl -X GET 'http://localhost:9090/api/plot/all' \
         {
             "Id": 4,
             "userId": 1,
-            "streetName": "partizghjanu gatve",
+            "streetId": 7,
             "lotNo": 52,
             "areaSize": 20,
             "purpose": "agrikultūrinis",
@@ -628,12 +582,12 @@ curl -X GET 'http://localhost:9090/api/plot/all' \
 
 Atsako kodas: 200
 
-#### /api/user/plot PUT
+#### /api/street/:streetID/:plotID PUT
 
 ##### URL
 
 ```
-http://localhost:9090/api/user/plot
+http://localhost:9090/api/street/:streetID/:plotID
 ```
 
 ##### Resurso informacija
@@ -648,7 +602,6 @@ http://localhost:9090/api/user/plot
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
 | lotNo | taip | ploto numeris | 0 | 52 |
 | areaSize | ne | žemės plotas arais | 0 | 20 |
 | purpose | ne | ploto paskirtis. Gali būti sandėliss/gyvenamasis/agrikultūrinis/miškininkystės |  | agrikultūrinis |
@@ -657,12 +610,13 @@ http://localhost:9090/api/user/plot
 ##### Pavyzdinė užklausa
 
 ```
-curl -X PUT 'http://localhost:9090/api/user/plot' \
+curl -X PUT 'http://localhost:9090/api/street/7/8' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
 {
-    "streetName":"partizanu g.50",
+    "streetId":7,
+    "plotId":8,
     "areaSize":1000,
     "purpose":"Gyvenamasis",
     "type":"parduodamas"
@@ -679,7 +633,7 @@ curl -X PUT 'http://localhost:9090/api/user/plot' \
     "result": {
         "Id": 1,
         "userId": 1,
-        "streetName": "partizanu g.50",
+        "streetId": 7,
         "lotNo": 110,
         "areaSize": 1000,
         "purpose": "Gyvenamasis",
@@ -691,12 +645,12 @@ curl -X PUT 'http://localhost:9090/api/user/plot' \
 
 Atsako kodas: 200
 
-#### /api/user/plot/remove REMOVE
+#### /api/street/:streetID/:plotID REMOVE
 
 ##### URL
 
 ```
-http://localhost:9090/api/user/plot/remove
+http://localhost:9090/api/street/:streetID/:plotID
 ```
 
 ##### Resurso informacija
@@ -717,7 +671,7 @@ http://localhost:9090/api/user/plot/remove
 ##### Pavyzdinė užklausa
 
 ```
-curl -X DELETE 'http://127.0.0.1:9090/api/user/plot/remove?streetName=savanoriu+prospektas&lotNo=1' \
+curl -X DELETE 'http://127.0.0.1:9090/api/street/5/13' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}"
 ```
@@ -735,58 +689,14 @@ curl -X DELETE 'http://127.0.0.1:9090/api/user/plot/remove?streetName=savanoriu+
 
 Atsako kodas: 200
 
-#### /api/admin/plot/remove REMOVE
-
-| streetName | taip | gatvės pavadinimas |  | partizghjanu gatve |
-| lotNo | taip | ploto numeris | 0 | 52 |
-
-##### URL
-
-```
-http://localhost:9090/api/admin/plot/remove
-```
-
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | taip       |
-| Reikalauja administratoriaus teisių?   | taip        |
-| Gali vykdyti tik savo įrašams?   | ne        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-|  |  |  |  |  |
-|  |  |  |  |  |
-
-##### Pavyzdinė užklausa
-
-```
-curl -X DELETE 'http://127.0.0.1:9090/api/admin/plot/remove?streetName=savanoriu+prospektas&lotNo=1' \
--H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}"
-```
-
-##### Pavyzdinis atsakymas
-
-```
-{
-    "error": "You do not have admin privileges"
-}
-```
-
-Atsako kodas: 401
-
 ### Building
 
-#### /api/user/building POST
+#### /api/street/:streetID/:plotID/ POST
 
 ##### URL
 
 ```
-http://localhost:9090/api/user/building
+http://localhost:9090/api/street/:streetID/:plotID/
 ```
 
 ##### Resurso informacija
@@ -800,8 +710,6 @@ http://localhost:9090/api/user/building
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
-| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
 | streetNumber | taip | pastato gatvės numeris |  | 25A |
 | type | taip | Pastato tipas. Pavyzdžiui butas, garažas, namas. Parametro pasirinkimai neribojami |  | butas |
 | areaSize | taip | plotas kvadratiniais metrais | 0 | 5 |
@@ -812,14 +720,16 @@ http://localhost:9090/api/user/building
 ##### Pavyzdinė užklausa
 
 ```
-curl -X POST 'http://localhost:9090/api/user/building' \
+curl -X POST 'http://localhost:9090/api/street/5/15' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
 {
-    "streetName":"partizanu g.50",
+    "streetId":5,
+    "plotId":15,
     "lotNo":110,
-    "streetNumber":"25A",
+    "streetId":5,
+    "plotId":15,
     "type":"butas",
     "areaSize":5,
     "floorCount":10,
@@ -838,8 +748,8 @@ curl -X POST 'http://localhost:9090/api/user/building' \
     "result": {
         "Id": 1,
         "userId": 1,
-        "streetName": "partizanu g.50",
-        "lotNo": 110,
+        "streetId":5,
+        "plotId":15,
         "streetNumber": "25A",
         "type": "butas",
         "areaSize": 5,
@@ -853,12 +763,12 @@ curl -X POST 'http://localhost:9090/api/user/building' \
 
 Atsako kodas: 200
 
-#### /api/building GET
+#### /api/street/:streetID/:plotID/:buildingID GET
 
 ##### URL
 
 ```
-http://localhost:9090/api/building/
+http://localhost:9090/api/street/:streetID/:plotID/:buildingID
 ```
 
 ##### Resurso informacija
@@ -873,14 +783,11 @@ http://localhost:9090/api/building/
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
-| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
-| streetNumber | taip | pastato gatvės numeris |  | 25A |
 
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET 'http://127.0.0.1:9090/api/building?streetName=savanoriu+prospektas&lotNo=1&streetNumber=1' \
+curl -X GET 'http://127.0.0.1:9090/api/street/16/5/1' \
 -H 'Accept: application/json'
 ```
 
@@ -888,18 +795,18 @@ curl -X GET 'http://127.0.0.1:9090/api/building?streetName=savanoriu+prospektas&
 
 ```
 {
-    "error": "building with this street name, lot number and street number not found"
+    "error": "building with this streetId, plotId and buildingId not found"
 }
 ```
 
 Atsako kodas: 404
 
-#### /api/building/all GET
+#### /api/street/:streetID/:plotID/ GET
 
 ##### URL
 
 ```
-http://localhost:9090/api/building/all
+http://localhost:9090/api/street/:streetID/:plotID/
 ```
 
 ##### Resurso informacija
@@ -919,7 +826,7 @@ http://localhost:9090/api/building/all
 ##### Pavyzdinė užklausa
 
 ```
-curl -X GET 'http://localhost:9090/api/building/all' \
+curl -X GET 'http://localhost:9090/api/street/12/7/' \
 -H 'Accept: application/json'
 ```
 
@@ -931,7 +838,8 @@ curl -X GET 'http://localhost:9090/api/building/all' \
         {
             "Id": 1,
             "userId": 1,
-            "streetName": "partizanu g.50",
+            "streetId":12,
+            "plotId":7,
             "lotNo": 110,
             "streetNumber": "25A",
             "type": "butas",
@@ -943,7 +851,8 @@ curl -X GET 'http://localhost:9090/api/building/all' \
         {
             "Id": 2,
             "userId": 1,
-            "streetName": "partizanu g.555",
+            "streetId":12,
+            "plotId":7,
             "lotNo": 110,
             "streetNumber": "25A",
             "type": "butas",
@@ -959,12 +868,12 @@ curl -X GET 'http://localhost:9090/api/building/all' \
 
 Atsako kodas: 200
 
-#### /api/user/building PUT
+#### /api/street/:streetID/:plotID/:buildingID PUT
 
 ##### URL
 
 ```
-http://localhost:9090/api/user/building
+http://localhost:9090/api/street/:streetID/:plotID/:buildingID
 ```
 
 ##### Resurso informacija
@@ -979,8 +888,6 @@ http://localhost:9090/api/user/building
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
-| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
 | streetNumber | taip | pastato gatvės numeris |  | 25A |
 | type | ne | Pastato tipas. Pavyzdžiui butas, garažas, namas. Parametro pasirinkimai neribojami |  | butas |
 | areaSize | ne | plotas kvadratiniais metrais | 0 | 5 |
@@ -991,13 +898,13 @@ http://localhost:9090/api/user/building
 ##### Pavyzdinė užklausa
 
 ```
-curl -X PUT 'http://localhost:9090/api/user/building' \
+curl -X PUT 'http://localhost:9090/api/street/12/7/3' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '
 {
-    "streetName":"partizanu g.50",
-    "lotNo":110,
+    "streetId":12,
+    "plotId":7,
     "streetNumber":"25A",
     "year":2001,
     "price":234232
@@ -1014,8 +921,8 @@ curl -X PUT 'http://localhost:9090/api/user/building' \
     "result": {
         "Id": 1,
         "userId": 1,
-        "streetName": "partizanu g.50",
-        "lotNo": 110,
+        "streetId":12,
+        "plotId":7,
         "streetNumber": "25A",
         "type": "butas",
         "areaSize": 5,
@@ -1029,12 +936,12 @@ curl -X PUT 'http://localhost:9090/api/user/building' \
 
 Atsako kodas: 200
 
-#### /api/user/building/remove REMOVE
+#### /api/street/:streetID/:plotID/:buildingID REMOVE
 
 ##### URL
 
 ```
-http://localhost:9090/api/user/building/remove
+http://localhost:9090/api/street/:streetID/:plotID/:buildingID
 ```
 
 ##### Resurso informacija
@@ -1049,14 +956,11 @@ http://localhost:9090/api/user/building/remove
 
 | Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
-| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
-| streetNumber | taip | pastato gatvės numeris |  | 25A |
 
 ##### Pavyzdinė užklausa
 
 ```
-curl -X DELETE 'http://127.0.0.1:9090/api/user/building/remove?streetName=savanoriu+prospektas&lotNo=1&streetNumber=1' \
+curl -X DELETE 'http://127.0.0.1:9090/api/street/14/14/7' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${TOKEN}"
 ```
@@ -1074,54 +978,12 @@ curl -X DELETE 'http://127.0.0.1:9090/api/user/building/remove?streetName=savano
 
 Atsako kodas: 200
 
-#### /api/admin/building/remove REMOVE
-
-##### URL
-
-```
-http://localhost:9090/api/admin/building/remove
-```
-
-##### Resurso informacija
-
-| Formatas      | Description |
-| ----------- | ----------- |
-| Reikalauja autentifikacijos?      | taip       |
-| Reikalauja administratoriaus teisių?   | taip        |
-| Gali vykdyti tik savo įrašams?   | ne        |
-
-##### Parametrai
-
-| Parametras      | Privalomas | Aprašas | numatyta reikšmė | Pavyzdys |
-| ----------- | ----------- | ----------- | ----------- | ----------- |
-| streetName | taip | gatvės pavadinimas, kuriame yra pastatas |  | partizanu gatvė |
-| lotNo | taip | ploto numeris, kuriame yra pastatas | 0 | 110 |
-| streetNumber | taip | pastato gatvės numeris |  | 25A |
-
-##### Pavyzdinė užklausa
-
-```
-curl -X POST 'http://127.0.0.1:9090/api/admin/building/remove?streetName=savanoriu+prospektas&lotNo=1&streetNumber=1' \
--H 'Accept: application/json' \
--H "Authorization: Bearer ${TOKEN}"
-```
-
-##### Pavyzdinis atsakymas
-
-```
-{
-    "error": "You do not have admin privileges"
-}
-```
-
-Atsako kodas: 401
-
 ## Išvados
 
-- Būtina duomenų validacija backend'o pusėje. Neužtenka pasitikėti, jog frontend'o pusės perduodami duomenys bus tinkami.
 - Atsako kodai aiškiai pateikia, kokia galima problema, net jeigu negrąžinamas užklausos kūnas
-- Frontend'o aplikacija turi gebėti dinamiškai prisitaikyti prie įvairių įrenginio apribojimų. Pakeitus naršyklės lango dydį, duomenys privalo išlikti įskaitomi.
+- Frontend'o aplikacija turi gebėti dinamiškai prisitaikyti prie įvairių įrenginio apribojimų. Pakeitus naršyklės lango dydį, frontend'as neturėtų sugriūti.
 - Patogiau aplikaciją įkelti į cloud'ą, jeigu ji supakuota į docker konteinerį. Arba jeigu dar kitaip galima suautomatizuoti programos paleidimą.
+- Būtina duomenų validacija backend'o pusėje. Neužtenka pasitikėti, jog frontend'o pusės perduodami duomenys bus tinkami.
 
 ## Šaltiniai
 
