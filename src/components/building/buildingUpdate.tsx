@@ -1,26 +1,27 @@
 import { Component } from "react";
-import { Navigate } from "react-router-dom";
-import * as Yup from "yup";
+import { Link } from "react-router-dom";
 
 import Building from "../../api/building";
-import Storage from "../../user/userStorage";
-
-import { Form, Formik, ErrorMessage, Field } from "formik";
-import { FormGroup, FloatingLabel, Table} from 'react-bootstrap'
-
 import { IBuilding } from "../../types/building";
 
+import { Form, Formik, ErrorMessage, Field } from "formik";
+import { FormGroup, FloatingLabel, Table, Button} from 'react-bootstrap'
+import { useParams } from "react-router-dom";
 
-type Props = {};
+
+type Props = {
+  streetId: number,
+  plotId: number,
+  buildingId: number,
+};
 
 type State = {
   building: IBuilding,
-
   errorMsg: string,
   submitted: boolean,
 };
 
-export default class BuildingUpdate extends Component<Props, State> {
+class BuildingUpdate extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.handleBuildingUpdate = this.handleBuildingUpdate.bind(this);
@@ -33,46 +34,8 @@ export default class BuildingUpdate extends Component<Props, State> {
     };
   }
 
-  validationSchema() {
-    return Yup.object().shape({
-      streetName: Yup.string()
-        .test(
-          "len",
-          "The building name must be between 4 and 100 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length >= 4 &&
-            val.toString().length <= 100
-        )
-        .required("This field is required!"),
-      lotNo: Yup.number()
-      .test(
-        "interval",
-        "Value should be between 1 and 99999",
-        (val: any) =>
-          val &&
-          val >= 1 &&
-          val <= 99999
-      )
-      .required("This field is required!"),
-      streetNumber: Yup.string()
-      .test(
-        "len",
-        "The street number name must be between 1 and 10 characters.",
-        (val: any) =>
-          val &&
-          val.toString().length >= 1 &&
-          val.toString().length <= 10
-      )
-      .required("This field is required!"),
-    });
-  }
-
-  async handleBuildingUpdate(formValue: { streetName: string; lotNo: number; streetNumber: string; type: string; areaSize: number; floorCount: number; year: number; price: number; }) {
-    const { streetName, lotNo, streetNumber, type, areaSize, floorCount, year, price } = formValue;
-
-
-    let successState = false;
+  async handleBuildingUpdate(formValue: { streetNumber: string; postalCode: string, type: string; areaSize: number; floorCount: number; year: number; price: number; }) {
+    const {  streetNumber, postalCode, type, areaSize, floorCount, year, price } = formValue;
 
     this.setState({
       errorMsg: "",
@@ -80,7 +43,7 @@ export default class BuildingUpdate extends Component<Props, State> {
     });
 
     // no need for await anymore. this.setState will cause a rerendering.
-    let [responseStatus, responseMsg, responseBuilding] = await Building.update(streetName, lotNo, streetNumber, type, areaSize, floorCount, year, price)
+    let [responseStatus, responseMsg, responseBuilding] = await Building.update(this.props.streetId, this.props.plotId, this.props.buildingId, streetNumber, postalCode, type, areaSize, floorCount, year, price)
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses
     if (responseStatus > 199 && responseStatus < 300) {
@@ -103,9 +66,8 @@ export default class BuildingUpdate extends Component<Props, State> {
     const { errorMsg, submitted, building } = this.state
 
     const initialValues = {
-      streetName: "",
-      lotNo: 0,
       streetNumber: "",
+      postalCode: "",
       type: "",
       areaSize: 0,
       floorCount: 0,
@@ -119,38 +81,11 @@ export default class BuildingUpdate extends Component<Props, State> {
           {/* used as a hook to initialize form values */}
           <Formik
             initialValues={initialValues}
-            validationSchema={this.validationSchema}
             onSubmit={this.handleBuildingUpdate}
           >
             {/* acts as an HTML form tag to wrap form controls. */}
             <Form>
               <div>
-              <FormGroup>
-                <FloatingLabel controlId="floatingName" label="Street name">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="streetName" type="text" className="form-control" placeholder="example building name" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="streetName"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
-              <FormGroup>
-                <FloatingLabel controlId="floatingCity" label="Lot No.">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="lotNo" type="number" className="form-control" placeholder="example city name" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="lotNo"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
               <FormGroup>
                 <FloatingLabel controlId="floatingDistrict" label="Street number">
                   {/* A placeholder is required on each <Form.Control> */}
@@ -261,13 +196,13 @@ export default class BuildingUpdate extends Component<Props, State> {
           </Formik>
         </div>
 
-        {building.streetName && (
+        {building.streetNumber && (
         <Table striped bordered hover>
           <thead>
             <tr>
               <th>User Id</th>
-              <th>Street name</th>
-              <th>Lot No.</th>
+              <th>Street Id</th>
+              <th>Plot Id</th>
               <th>Street number</th>
               <th>Type</th>
               <th>Area size</th>
@@ -279,8 +214,8 @@ export default class BuildingUpdate extends Component<Props, State> {
           <tbody>
               <tr key={building.id}>
               <td>{building.userId}</td>
-              <td>{building.streetName}</td>
-              <td>{building.lotNo}</td>
+              <td>{building.streetId}</td>
+              <td>{building.plotId}</td>
               <td>{building.streetNumber}</td>
               <td>{building.type}</td>
               <td>{building.areaSize}</td>
@@ -291,7 +226,22 @@ export default class BuildingUpdate extends Component<Props, State> {
           </tbody>
         </Table>
         )}
+
+        <Link to={"/building/list/" + this.props.streetId + "/" + this.props.plotId}>
+          <Button variant="dark">
+            Go back
+          </Button>
+        </Link>
       </div>
     );
   }
+}
+
+export default function BuildingUpdateWrapper() {
+  const { streetId, plotId, buildingId } = useParams();
+  return (
+      <div>
+          <BuildingUpdate streetId={parseInt(streetId as string)} plotId={parseInt(plotId as string)} buildingId={parseInt(buildingId as string)}/>
+      </div>
+  );
 }

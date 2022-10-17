@@ -1,22 +1,23 @@
 import { Component } from "react";
-import { Navigate } from "react-router-dom";
 import * as Yup from "yup";
 
 import Plot from "../../api/plot";
-import Storage from "../../user/userStorage";
 
 import { Form, Formik, ErrorMessage, Field } from "formik";
-import { FormGroup, FloatingLabel} from 'react-bootstrap'
+import { FormGroup, FloatingLabel, Button} from 'react-bootstrap'
+import { Link, useParams } from "react-router-dom";
 
 
-type Props = {};
+type Props = {
+  streetId: number,
+};
 
 type State = {
   errorMsg: string,
   submitted: boolean,
 };
 
-export default class PlotCreate extends Component<Props, State> {
+class PlotCreate extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.handlePlotCreate = this.handlePlotCreate.bind(this);
@@ -29,16 +30,6 @@ export default class PlotCreate extends Component<Props, State> {
 
   validationSchema() {
     return Yup.object().shape({
-      streetName: Yup.string()
-        .test(
-          "len",
-          "The building name must be between 4 and 100 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length >= 4 &&
-            val.toString().length <= 100
-        )
-        .required("This field is required!"),
       lotNo: Yup.number()
       .test(
         "interval",
@@ -85,18 +76,15 @@ export default class PlotCreate extends Component<Props, State> {
     });
   }
 
-  async handlePlotCreate(formValue: { streetName: string; lotNo: number; areaSize: number; purpose: string; type: string; }) {
-    const { streetName, lotNo, areaSize, purpose, type } = formValue;
-
-    console.log("ieina")
+  async handlePlotCreate(formValue: { lotNo: number; areaSize: number; purpose: string; type: string; }) {
+    const { lotNo, areaSize, purpose, type } = formValue;
 
     this.setState({
       errorMsg: "",
       submitted: false,
     });
 
-    // no need for await anymore. this.setState will cause a rerendering.
-    let [responseStatus, responseMsg] = await Plot.create(streetName, lotNo, areaSize, purpose, type)
+    let [responseStatus, responseMsg] = await Plot.create(this.props.streetId, lotNo, areaSize, purpose, type);
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses
     if (responseStatus > 199 && responseStatus < 300) {
@@ -116,7 +104,6 @@ export default class PlotCreate extends Component<Props, State> {
     const { errorMsg, submitted } = this.state
 
     const initialValues = {
-      streetName: "", 
       lotNo: 0,
       areaSize: 0, 
       purpose: "", 
@@ -136,19 +123,6 @@ export default class PlotCreate extends Component<Props, State> {
             {/* acts as an HTML form tag to wrap form controls. */}
             <Form>
               <div>
-              <FormGroup>
-                <FloatingLabel controlId="floatingName" label="Street name">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="streetName" type="text" className="form-control" placeholder="example plot name" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="streetName"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
               <FormGroup>
                 <FloatingLabel controlId="floatingCity" label="Lot No.">
                   {/* A placeholder is required on each <Form.Control> */}
@@ -227,6 +201,11 @@ export default class PlotCreate extends Component<Props, State> {
                 </div>
               )}
 
+              <Link to={"/plot/list/" + this.props.streetId}>
+                <Button variant="dark">
+                  Go back
+                </Button>
+              </Link>
 
             </Form>
           </Formik>
@@ -234,4 +213,13 @@ export default class PlotCreate extends Component<Props, State> {
       </div>
     );
   }
+}
+
+export default function PlotCreateWrapper() {
+  const { streetId } = useParams();
+  return (
+      <div>
+          <PlotCreate streetId={parseInt(streetId as string)}/>
+      </div>
+  );
 }

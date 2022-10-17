@@ -17,47 +17,47 @@ export const SidebarDataGuest = [
         path: '/street/list',
         icon: <IoIcons.IoIosPaper />
       },
-      {
-        title: 'Read',
-        path: '/street/read',
-        icon: <IoIcons.IoIosPaper />
-      }
+      // {
+      //   title: 'Read',
+      //   path: '/street/read',
+      //   icon: <IoIcons.IoIosPaper />
+      // }
     ]
   },
-  {
-    title: 'Plots',
-    icon: <GiIcons.GiPlainSquare />,
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav: [
-      {
-        title: 'List',
-        path: '/plot/list',
-        icon: <IoIcons.IoIosPaper />
-      },
-      {
-        title: 'Read',
-        path: '/plot/read',
-        icon: <IoIcons.IoIosPaper />
-      }
-    ]
-  },
-  {
-    title: 'Buildings',
-    icon: <AiIcons.AiFillHome />,
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav: [
-      {
-        title: 'List',
-        path: '/building/list',
-        icon: <IoIcons.IoIosPaper />
-      },
-      {
-        title: 'Read',
-        path: '/building/read',
-        icon: <IoIcons.IoIosPaper />
-      },
-    ]
-  },
+  // {
+  //   title: 'Plots',
+  //   icon: <GiIcons.GiPlainSquare />,
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
+  //   subNav: [
+  //     {
+  //       title: 'List',
+  //       path: '/plot/list',
+  //       icon: <IoIcons.IoIosPaper />
+  //     },
+      // {
+      //   title: 'Read',
+      //   path: '/plot/read',
+      //   icon: <IoIcons.IoIosPaper />
+      // }
+  //   ]
+  // },
+  // {
+  //   title: 'Buildings',
+  //   icon: <AiIcons.AiFillHome />,
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
+  //   subNav: [
+  //     {
+  //       title: 'List',
+  //       path: '/building/list',
+  //       icon: <IoIcons.IoIosPaper />
+  //     },
+      // {
+      //   title: 'Read',
+      //   path: '/building/read',
+      //   icon: <IoIcons.IoIosPaper />
+      // },
+  //   ]
+  // },
 ];

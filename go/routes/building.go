@@ -18,7 +18,6 @@ import (
 type buildingUpdateBody struct {
 	Id           int64    `json:"id"` // post ID
 	UserId       int64    `json:"userId"`
-	LotNo        int64    `json:"lotNo" validate:"gt=0,lt=99999"`
 	StreetNumber string   `json:"streetNumber" validate:"max=10,min=1"`
 	Type         string   `json:"type" validate:"max=20,min=3"`
 	AreaSize     int64    `json:"areaSize" validate:"gt=0,lt=999999"`
@@ -140,9 +139,6 @@ func (svc *AuthService) UpdateBuilding(ctx *gin.Context) {
 	}
 	if body.FloorCount != 0 {
 		building.Price = body.Price
-	}
-	if body.LotNo != 0 {
-		building.LotNo = body.LotNo
 	}
 	if body.Year != 0 {
 		building.Year = body.Year

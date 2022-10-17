@@ -16,12 +16,12 @@ class Plot {
     this.timeout = 10000
   }
 
-  async list() : Promise<[number, string, IPlotArr]>  {
+  async list(streetId: number) : Promise<[number, string, IPlotArr]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"];
     let plots: IPlotArr = [];
     try {
     await new Promise((resolve, reject) => axios
-      .get(this.host + "/api/plot/all",
+      .get(this.host + "/api/street/" + streetId + "/",
       { timeout: this.timeout,
       })
       .then(response => {
@@ -43,12 +43,11 @@ class Plot {
     return [responseStatus, responseError, plots]
   }
 
-  async create(streetName: string, lotNo: number, areaSize: number, purpose: string, type: string) : Promise<[number, string]>  {
+  async create(streetId: number, lotNo: number, areaSize: number, purpose: string, type: string) : Promise<[number, string]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"]
     try {
     await new Promise((resolve, reject) => axios
-      .post(this.host + "/api/user/plot", {
-        streetName: streetName,
+      .post(this.host + "/api/street/" + streetId, {
         lotNo: lotNo,
         areaSize: areaSize,
         purpose: purpose,
@@ -75,12 +74,12 @@ class Plot {
     return [responseStatus, responseError]
   }
 
-  async read(streetName: string, lotNo: number) : Promise<[number, string, IPlot]>  {
+  async read(streetId: number, plotId: number) : Promise<[number, string, IPlot]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"];
     let plot: IPlot = {
       id: 0,
       userId: 0,
-      streetName: "",
+      streetId: 0,
       lotNo: 0,
       areaSize: 0,
       purpose: "",
@@ -88,12 +87,8 @@ class Plot {
     };
     try {
     await new Promise((resolve, reject) => axios
-      .get(this.host + "/api/plot",
+      .get(this.host + "/api/street/" + streetId + "/" + plotId,
       { timeout: this.timeout,
-        params: {
-          streetName: streetName,
-          lotNo: lotNo,
-        }
       })
       .then(response => {
         plot = response.data.result;
@@ -113,12 +108,12 @@ class Plot {
   }
 
   
-  async update(streetName: string, lotNo: number, areaSize: number, purpose: string, type: string) : Promise<[number, string, IPlot]>  {
+  async update(streetId: number, plotId: number, lotNo: number, areaSize: number, purpose: string, type: string) : Promise<[number, string, IPlot]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"]
     let plot: IPlot = {
       id: 0,
       userId: 0,
-      streetName: "",
+      streetId: 0,
       lotNo: 0,
       areaSize: 0,
       purpose: "",
@@ -127,8 +122,7 @@ class Plot {
 
     try {
     await new Promise((resolve, reject) => axios
-      .put(this.host + "/api/user/plot", {
-        streetName,
+      .put(this.host + "/api/street/" + streetId + "/" + plotId, {
         lotNo,
         areaSize,
         purpose,
@@ -154,24 +148,13 @@ class Plot {
     return [responseStatus, responseError, plot]
   }
 
-  async remove(streetName: string, lotNo: number, notAdmin: boolean) : Promise<[number, string]>  {
-    let path: string = "";
-    if (notAdmin === true) {
-      path = "/api/user/plot/remove";
-    } else {
-      path = "/api/admin/plot/remove";
-    }
-
+  async remove(streetId: number, plotId: number) : Promise<[number, string]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"];
     try {
     await new Promise((resolve, reject) => axios
-      .delete(this.host + path,
+      .delete(this.host + "/api/street/" + streetId + "/" + plotId,
       { timeout: this.timeout,
         headers: authHeader(),
-        params: {
-          streetName: streetName,
-          lotNo: lotNo
-        }
       })
       .then(response => {
         [responseStatus, responseError] = [response.status, "success"]

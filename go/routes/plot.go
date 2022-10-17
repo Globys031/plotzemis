@@ -14,10 +14,6 @@ import (
 	"github.com/Globys031/plotzemis/go/db/models"
 )
 
-type plotGetBody struct {
-	LotNo int64 `json:"lotNo"`
-}
-
 // This one doesn't require any field to filled out.
 // But we still need to validate that the data provided fits requirements
 // Additionally takes an array of fields to know which ones should be updated

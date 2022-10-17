@@ -1,26 +1,24 @@
 import { Component } from "react";
-import { Navigate } from "react-router-dom";
-import * as Yup from "yup";
+import { Link } from "react-router-dom";
 
 import Street from "../../api/street";
-import Storage from "../../user/userStorage";
-
-import { Form, Formik, ErrorMessage, Field } from "formik";
-import { FormGroup, FloatingLabel, Table} from 'react-bootstrap'
-
 import { IStreet } from "../../types/street";
 
+import { Form, Formik, ErrorMessage, Field } from "formik";
+import { FormGroup, FloatingLabel, Table, Button} from 'react-bootstrap'
+import { useParams } from "react-router-dom";
 
-type Props = {};
+type Props = {
+  streetId: number,
+};
 
 type State = {
   street: IStreet,
-
   errorMsg: string,
   submitted: boolean,
 };
 
-export default class StreetUpdate extends Component<Props, State> {
+class StreetUpdate extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.handleStreetUpdate = this.handleStreetUpdate.bind(this);
@@ -33,23 +31,8 @@ export default class StreetUpdate extends Component<Props, State> {
     };
   }
 
-  validationSchema() {
-    return Yup.object().shape({
-      oldName: Yup.string()
-        .test(
-          "len",
-          "The street name must be between 4 and 100 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length >= 4 &&
-            val.toString().length <= 100
-        )
-        .required("This field is required!"),
-    });
-  }
-
-  async handleStreetUpdate(formValue: { oldName: string; newName: string; city: string; district: string; postalCode: string; addressCount: number; streetLength: string; }) {
-    const { oldName, newName, city, district, postalCode, addressCount, streetLength } = formValue;
+  async handleStreetUpdate(formValue: { name: string; city: string; district: string; addressCount: number; streetLength: string; }) {
+    const { name, city, district, addressCount, streetLength } = formValue;
 
 
     let successState = false;
@@ -59,8 +42,7 @@ export default class StreetUpdate extends Component<Props, State> {
       submitted: false,
     });
 
-    // no need for await anymore. this.setState will cause a rerendering.
-    let [responseStatus, responseMsg, responseStreet] = await Street.update(oldName, newName, city, district, postalCode, addressCount, streetLength)
+    let [responseStatus, responseMsg, responseStreet] = await Street.update(this.props.streetId, name, city, district, addressCount, streetLength)
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses
     if (responseStatus > 199 && responseStatus < 300) {
@@ -83,11 +65,9 @@ export default class StreetUpdate extends Component<Props, State> {
     const { errorMsg, submitted, street } = this.state
 
     const initialValues = {
-      oldName: "",
-      newName: "",
+      name: "",
       city: "",
       district: "",
-      postalCode: "",
       addressCount: 0,
       streetLength: "",
     };
@@ -98,32 +78,18 @@ export default class StreetUpdate extends Component<Props, State> {
           {/* used as a hook to initialize form values */}
           <Formik
             initialValues={initialValues}
-            validationSchema={this.validationSchema}
             onSubmit={this.handleStreetUpdate}
           >
             {/* acts as an HTML form tag to wrap form controls. */}
             <Form>
               <div>
               <FormGroup>
-                <FloatingLabel controlId="floatingName" label="Old name">
+                <FloatingLabel controlId="floatingName" label="Name">
                   {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="oldName" type="text" className="form-control" placeholder="example street name" />
+                  <Field name="name" type="text" className="form-control" placeholder="example street name" />
                 </FloatingLabel>
                 <ErrorMessage
-                  name="oldName"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
-              <FormGroup>
-                <FloatingLabel controlId="floatingName" label="New name">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="newName" type="text" className="form-control" placeholder="example street name" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="newName"
+                  name="name"
                   component="div"
                   className="alert alert-danger"
                 />
@@ -155,20 +121,6 @@ export default class StreetUpdate extends Component<Props, State> {
                 />
               </FormGroup>
               <br></br>
-
-              <FormGroup>
-                <FloatingLabel controlId="floatingPostalCode" label="PostalCode">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="postalCode" type="text" className="form-control" placeholder="12345" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="postalCode"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
 
               <FormGroup>
                 <FloatingLabel controlId="floatingAddressCount" label="AddressCount">
@@ -221,8 +173,6 @@ export default class StreetUpdate extends Component<Props, State> {
                   </div>
                 </div>
               )}
-
-
             </Form>
           </Formik>
         </div>
@@ -235,7 +185,6 @@ export default class StreetUpdate extends Component<Props, State> {
               <th>Street name</th>
               <th>City</th>
               <th>District</th>
-              <th>Postal Code</th>
               <th>Address Count</th>
               <th>Street Length</th>
             </tr>
@@ -246,14 +195,28 @@ export default class StreetUpdate extends Component<Props, State> {
               <td>{street.name}</td>
               <td>{street.city}</td>
               <td>{street.district}</td>
-              <td>{street.postalCode}</td>
               <td>{street.addressCount}</td>
               <td>{street.streetLength}</td>
           </tr>
           </tbody>
         </Table>
         )}
+
+        <Link to={"/street/list"}>
+          <Button variant="dark">
+            Go back
+          </Button>
+        </Link>
       </div>
     );
   }
+}
+
+export default function StreetUpdateWrapper() {
+  const { streetId } = useParams();
+  return (
+      <div>
+          <StreetUpdate streetId={parseInt(streetId as string)} />
+      </div>
+  );
 }

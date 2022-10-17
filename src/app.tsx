@@ -23,21 +23,18 @@ import Sidebar from './components/sidebar';
 
 import StreetCreate from './components/street/streetCreate';
 import StreetList from './components/street/streetList';
-import StreetRead from './components/street/streetRead';
-import StreetRemove from './components/street/streetRemove';
-import StreetUpdate from './components/street/streetUpdate';
+import StreetReadWrapper from './components/street/streetRead';
+import StreetUpdateWrapper from './components/street/streetUpdate';
 
-import PlotCreate from './components/plot/plotCreate';
-import PlotList from './components/plot/plotList';
-import PlotRead from './components/plot/plotRead';
-import PlotRemove from './components/plot/plotRemove';
-import PlotUpdate from './components/plot/plotUpdate';
+import PlotCreateWrapper from './components/plot/plotCreate';
+import PlotListWrapper from './components/plot/plotList';
+import PlotReadWrapper from './components/plot/plotRead';
+import PlotUpdateWrapper from './components/plot/plotUpdate';
 
-import BuildingCreate from './components/building/buildingCreate';
-import BuildingList from './components/building/buildingList';
-import BuildingRead from './components/building/buildingRead';
-import BuildingRemove from './components/building/buildingRemove';
-import BuildingUpdate from './components/building/buildingUpdate';
+import BuildingCreateWrapper from './components/building/buildingCreate';
+import BuildingListWrapper from './components/building/buildingList';
+import BuildingReadWrapper from './components/building/buildingRead';
+import BuildingUpdateWrapper from './components/building/buildingUpdate';
 
 import EventBus from "./global/eventBus";
 import Storage from "./user/userStorage";
@@ -193,23 +190,21 @@ class App extends Component<Props, State> {
 
               <Route path="/register" element={<Register />} />
 
-              <Route path="/street/list" element={<StreetList />} />
+              {/* <Route path="/street/list" element={<StreetList />} /> */}
+              <Route path="/street/list" element={<StreetList loggedIn={true} />} />
               <Route path="/street/create" element={<StreetCreate />} />
-              <Route path="/street/read" element={<StreetRead />} />
-              <Route path="/street/update" element={<StreetUpdate />} />
-              <Route path="/street/delete" element={<StreetRemove />} />
+              <Route path="/street/read/:streetId" element={<StreetReadWrapper />} />
+              <Route path="/street/update/:streetId" element={<StreetUpdateWrapper />} />
 
-              <Route path="/plot/list" element={<PlotList />} />
-              <Route path="/plot/create" element={<PlotCreate />} />
-              <Route path="/plot/read" element={<PlotRead />} />
-              <Route path="/plot/update" element={<PlotUpdate />} />
-              <Route path="/plot/delete" element={<PlotRemove />} />
+              <Route path="/plot/list/:streetId" element={<PlotListWrapper loggedIn={true} />} />
+              <Route path="/plot/create/:streetId" element={<PlotCreateWrapper />} />
+              <Route path="/plot/read/:streetId/:plotId" element={<PlotReadWrapper />} />
+              <Route path="/plot/update/:streetId/:plotId" element={<PlotUpdateWrapper />} />
 
-              <Route path="/building/list" element={<BuildingList />} />
-              <Route path="/building/create" element={<BuildingCreate />} />
-              <Route path="/building/read" element={<BuildingRead />} />
-              <Route path="/building/update" element={<BuildingUpdate />} />
-              <Route path="/building/delete" element={<BuildingRemove />} />
+              <Route path="/building/list/:streetId/:plotId" element={<BuildingListWrapper loggedIn={true} />} />
+              <Route path="/building/create/:streetId/:plotId" element={<BuildingCreateWrapper />} />
+              <Route path="/building/read/:streetId/:plotId/:buildingId" element={<BuildingReadWrapper />} />
+              <Route path="/building/update/:streetId/:plotId/:buildingId" element={<BuildingUpdateWrapper />} />
 
               <Route path="*" element={<PageNotFound />} />
             </Routes>
@@ -224,14 +219,17 @@ class App extends Component<Props, State> {
               }></Route>
               <Route path="/register" element={<Register />} />
 
-              <Route path="/street/list" element={<StreetList />} />
-              <Route path="/street/read" element={<StreetRead />} />
+              <Route path="/street/list" element={<StreetList loggedIn={false} />} />
+              <Route path="/street/create" element={<StreetCreate />} />
+              <Route path="/street/read/:streetId" element={<StreetReadWrapper />} />
 
-              <Route path="/plot/list" element={<PlotList />} />
-              <Route path="/plot/read" element={<PlotRead />} />
+              <Route path="/plot/list/:streetId" element={<PlotListWrapper loggedIn={false} />} />
+              <Route path="/plot/create/:streetId" element={<PlotCreateWrapper />} />
+              <Route path="/plot/read/:streetId/:plotId" element={<PlotReadWrapper />} />
 
-              <Route path="/building/list" element={<BuildingList />} />
-              <Route path="/building/read" element={<BuildingRead />} />
+              <Route path="/building/list/:streetId/:plotId" element={<BuildingListWrapper loggedIn={false} />} />
+              <Route path="/building/create/:streetId/:plotId" element={<BuildingCreateWrapper />} />
+              <Route path="/building/read/:streetId/:plotId/:buildingId" element={<BuildingReadWrapper />} />
 
               <Route path="*" element={<PageNotFound />} />
             </Routes>

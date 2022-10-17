@@ -4,7 +4,6 @@ interface IStreet {
   name: string,
   city: string,
   district: string,
-  postalCode: string,
   addressCount: number,
   streetLength: string,
 }

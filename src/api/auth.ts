@@ -66,7 +66,6 @@ class Authentication {
         headers: authHeader(),
       }) // Timeout after 5 seconds
       .then(response => {
-        localStorage.setItem("user", JSON.stringify(response.data.userDetails));
         localStorage.setItem("sessionToken", response.data.token);
         [responseStatus, responseError] = [response.status, "success"]
         resolve(response)
@@ -91,7 +90,6 @@ class Authentication {
 
   // remove JWT from Local Storage
   async logout() {
-    localStorage.removeItem("user");
     localStorage.removeItem("sessionToken");
     // pretty sure kad reiketu istrint ir is serverio puses sessionToken though
   }

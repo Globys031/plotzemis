@@ -1,7 +1,7 @@
 interface IPlot {
   id: number,
   userId: number,
-  streetName: string,
+  streetId: number,
   lotNo: number,
   areaSize: number,
   purpose: string,

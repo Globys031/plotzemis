@@ -16,12 +16,12 @@ class Building {
     this.timeout = 10000
   }
 
-  async list() : Promise<[number, string, IBuildingArr]>  {
+  async list(streetId: number, plotId: number) : Promise<[number, string, IBuildingArr]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"];
     let buildings: IBuildingArr = [];
     try {
     await new Promise((resolve, reject) => axios
-      .get(this.host + "/api/building/all",
+      .get(this.host + "/api/street/" + streetId + "/" + plotId + "/",
       { timeout: this.timeout,
       })
       .then(response => {
@@ -43,14 +43,13 @@ class Building {
     return [responseStatus, responseError, buildings]
   }
 
-  async create(streetName: string, lotNo: number, streetNumber: string, type: string, areaSize: number, floorCount: number, year: number, price: number) : Promise<[number, string]>  {    
+  async create(streetId: number, plotId: number, streetNumber: string, postalCode: string, type: string, areaSize: number, floorCount: number, year: number, price: number) : Promise<[number, string]>  {    
     let [responseStatus, responseError] = [400, "something went wrong client side"]
     try {
     await new Promise((resolve, reject) => axios
-      .post(this.host + "/api/user/building", {
-        streetName,
-        lotNo,
+      .post(this.host + "/api/street/" + streetId + "/" + plotId, {
         streetNumber,
+        postalCode,
         type,
         areaSize,
         floorCount,
@@ -78,14 +77,15 @@ class Building {
     return [responseStatus, responseError]
   }
 
-  async read(streetName: string, lotNo: number, streetNumber: string) : Promise<[number, string, IBuilding]>  {
+  async read(streetId: number, plotId: number, buildingId: number) : Promise<[number, string, IBuilding]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"];
     let building: IBuilding = {
       id: 0,
       userId: 0,
-      streetName: "",
-      lotNo: 0,
+      streetId: 0,
+      plotId: 0,
       streetNumber: "",
+      postalCode: "",
       type: "",
       areaSize: 0,
       floorCount: 0,
@@ -95,13 +95,8 @@ class Building {
     };
     try {
     await new Promise((resolve, reject) => axios
-      .get(this.host + "/api/building",
+      .get(this.host + "/api/street/" + streetId + "/" + plotId + "/" + buildingId,
       { timeout: this.timeout,
-        params: {
-          streetName: streetName,
-          lotNo: lotNo,
-          streetNumber: streetNumber,
-        }
       })
       .then(response => {
         building = response.data.result;
@@ -121,14 +116,15 @@ class Building {
   }
 
   
-  async update(streetName: string, lotNo: number, streetNumber: string, type: string, areaSize: number, floorCount: number, year: number, price: number) : Promise<[number, string, IBuilding]>  {
+  async update(streetId: number, plotId: number, buildingId: number, streetNumber: string, postalCode: string, type: string, areaSize: number, floorCount: number, year: number, price: number) : Promise<[number, string, IBuilding]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"]
     let building: IBuilding = {
       id: 0,
       userId: 0,
-      streetName: "",
-      lotNo: 0,
+      streetId: 0,
+      plotId: 0,
       streetNumber: "",
+      postalCode: "",
       type: "",
       areaSize: 0,
       floorCount: 0,
@@ -138,10 +134,9 @@ class Building {
 
     try {
     await new Promise((resolve, reject) => axios
-      .put(this.host + "/api/user/building", {
-        streetName,
-        lotNo,
+      .put(this.host + "/api/street/" + streetId + "/" + plotId + "/" + buildingId, {
         streetNumber,
+        postalCode,
         type,
         areaSize,
         floorCount,
@@ -168,25 +163,13 @@ class Building {
     return [responseStatus, responseError, building]
   }
 
-  async remove(streetName: string, lotNo: number, streetNumber: string, notAdmin: boolean) : Promise<[number, string]>  {
-    let path: string = "";
-    if (notAdmin === true) {
-      path = "/api/user/building/remove";
-    } else {
-      path = "/api/admin/building/remove";
-    }
-
+  async remove(streetId: number, plotId: number, buildingId: number) : Promise<[number, string]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"];
     try {
     await new Promise((resolve, reject) => axios
-      .delete(this.host + path,
+      .delete(this.host + "/api/street/" + streetId + "/" + plotId + "/" + buildingId,
       { timeout: this.timeout,
         headers: authHeader(),
-        params: {
-          streetName: streetName,
-          lotNo: lotNo,
-          streetNumber: streetNumber,
-        }
       })
       .then(response => {
         [responseStatus, responseError] = [response.status, "success"]

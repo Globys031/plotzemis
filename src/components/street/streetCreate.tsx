@@ -1,12 +1,11 @@
 import { Component } from "react";
-import { Navigate } from "react-router-dom";
 import * as Yup from "yup";
 
 import Street from "../../api/street";
-import Storage from "../../user/userStorage";
 
 import { Form, Formik, ErrorMessage, Field } from "formik";
-import { FormGroup, FloatingLabel} from 'react-bootstrap'
+import { FormGroup, FloatingLabel, Button} from 'react-bootstrap'
+import { Link } from "react-router-dom";
 
 
 type Props = {};
@@ -59,15 +58,6 @@ export default class StreetCreate extends Component<Props, State> {
             val.toString().length <= 100
         )
       .required("This field is required!"),
-      postalCode: Yup.string()
-        .test(
-          "len",
-          "The postal code must be 5 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length === 5
-        )
-        .required("This field is required!"),
       addressCount: Yup.number()
         .test(
           "interval",
@@ -91,11 +81,8 @@ export default class StreetCreate extends Component<Props, State> {
     });
   }
 
-  async handleStreetCreate(formValue: { name: string; city: string; district: string; postalCode: string; addressCount: number; streetLength: string; }) {
-    const { name, city, district, postalCode, addressCount, streetLength } = formValue;
-
-
-    let successState = false;
+  async handleStreetCreate(formValue: { name: string; city: string; district: string; addressCount: number; streetLength: string; }) {
+    const { name, city, district, addressCount, streetLength } = formValue;
 
     this.setState({
       errorMsg: "",
@@ -103,11 +90,11 @@ export default class StreetCreate extends Component<Props, State> {
     });
 
     // no need for await anymore. this.setState will cause a rerendering.
-    let [responseStatus, responseMsg] = await Street.create(name, city, district, postalCode, addressCount, streetLength)
+    let [responseStatus, responseMsg] = await Street.create(name, city, district, addressCount, streetLength)
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses
     if (responseStatus > 199 && responseStatus < 300) {
-      successState = true;
+      //
     } else {
       this.setState({
         errorMsg: responseMsg,
@@ -126,7 +113,6 @@ export default class StreetCreate extends Component<Props, State> {
       name: "",
       city: "",
       district: "",
-      postalCode: "",
       addressCount: 0,
       streetLength: "",
     };
@@ -183,20 +169,6 @@ export default class StreetCreate extends Component<Props, State> {
               <br></br>
 
               <FormGroup>
-                <FloatingLabel controlId="floatingPostalCode" label="PostalCode">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="postalCode" type="text" className="form-control" placeholder="12345" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="postalCode"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
-
-              <FormGroup>
                 <FloatingLabel controlId="floatingAddressCount" label="AddressCount">
                   {/* A placeholder is required on each <Form.Control> */}
                   <Field name="addressCount" type="number" className="form-control" placeholder="0" />
@@ -248,6 +220,11 @@ export default class StreetCreate extends Component<Props, State> {
                 </div>
               )}
 
+              <Link to={"/street/list"}>
+                <Button variant="dark">
+                  Go back
+                </Button>
+              </Link>
 
             </Form>
           </Formik>

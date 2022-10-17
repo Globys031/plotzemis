@@ -1,9 +1,10 @@
 interface IBuilding {
   id: number,
   userId: number,
-  streetName: string,
-  lotNo: number,
+  streetId: number,
+  plotId: number,
   streetNumber: string,
+  postalCode: string,
   type: string,
   areaSize: number,
   floorCount: number,

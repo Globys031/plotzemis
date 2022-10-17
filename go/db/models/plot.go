@@ -7,7 +7,7 @@ package models
 type Plot struct {
 	// Palikt Id for convenience sake. Tiesiog dedant paziuret ar jau toks
 	// lot number egzistuoja ar ne
-	Id         int64 `gorm:"primaryKey" ` // Automatically incremented by database
+	Id         int64 `json:"id" gorm:"primaryKey" ` // Automatically incremented by database
 	UserId     int64 `json:"userId"`
 	StreetId   int64 `json:"streetId"`
 	LotNo      int64 `json:"lotNo" validate:"required,gt=0,lt=10000"`

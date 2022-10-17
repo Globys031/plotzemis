@@ -21,7 +21,7 @@ class Street {
     let streets: IStreetArr = [];
     try {
     await new Promise((resolve, reject) => axios
-      .get(this.host + "/api/street/all",
+      .get(this.host + "/api/street/",
       { timeout: this.timeout,
       })
       .then(response => {
@@ -43,15 +43,14 @@ class Street {
     return [responseStatus, responseError, streets]
   }
 
-  async create(name: string, city: string, district: string, postalCode: string, addressCount: number, streetLength: string) : Promise<[number, string]>  {
+  async create(name: string, city: string, district: string, addressCount: number, streetLength: string) : Promise<[number, string]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"]
     try {
     await new Promise((resolve, reject) => axios
-      .post(this.host + "/api/user/street", {
+      .post(this.host + "/api/street", {
         name,
         city,
         district,
-        postalCode,
         addressCount,
         streetLength,
       },
@@ -76,7 +75,7 @@ class Street {
     return [responseStatus, responseError]
   }
 
-  async read(name: string) : Promise<[number, string, IStreet]>  {
+  async read(streetId: number) : Promise<[number, string, IStreet]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"];
     let street: IStreet = {
       id: 0,
@@ -84,20 +83,13 @@ class Street {
       name: "",
       city: "",
       district: "",
-      postalCode: "",
       addressCount: 0,
       streetLength: ""
     };
     try {
     await new Promise((resolve, reject) => axios
-      .get(this.host + "/api/street",
+      .get(this.host + "/api/street/" + streetId,
       { timeout: this.timeout,
-        params: {
-          name: name
-        }
-        // params: {
-        //   name: name
-        // }
       })
       .then(response => {
         street = response.data.result;
@@ -117,7 +109,7 @@ class Street {
   }
 
   
-  async update(oldName: string, newName: string, city: string, district: string, postalCode: string, addressCount: number, streetLength: string) : Promise<[number, string, IStreet]>  {
+  async update(streetId: number, name: string, city: string, district: string, addressCount: number, streetLength: string) : Promise<[number, string, IStreet]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"]
     let street: IStreet = {
       id: 0,
@@ -125,19 +117,16 @@ class Street {
       name: "",
       city: "",
       district: "",
-      postalCode: "",
       addressCount: 0,
       streetLength: ""
     };
 
     try {
     await new Promise((resolve, reject) => axios
-      .put(this.host + "/api/user/street", {
-        oldName,
-        newName,
+      .put(this.host + "/api/street/" + streetId, {
+        name,
         city,
         district,
-        postalCode,
         addressCount,
         streetLength,
       },
@@ -161,23 +150,13 @@ class Street {
     return [responseStatus, responseError, street]
   }
 
-  async remove(name: string, notAdmin: boolean) : Promise<[number, string]>  {
-    let path: string = "";
-    if (notAdmin === true) {
-      path = "/api/user/street/remove";
-    } else {
-      path = "/api/admin/street/remove";
-    }
-
+  async remove(streetId: number) : Promise<[number, string]>  {
     let [responseStatus, responseError] = [400, "something went wrong client side"];
     try {
     await new Promise((resolve, reject) => axios
-      .delete(this.host + path,
+      .delete(this.host + "/api/street/" + streetId,
       { timeout: this.timeout,
         headers: authHeader(),
-        params: {
-          name: name
-        }
       })
       .then(response => {
         [responseStatus, responseError] = [response.status, "success"]

@@ -1,22 +1,24 @@
 import { Component } from "react";
-import { Navigate } from "react-router-dom";
 import * as Yup from "yup";
 
 import Building from "../../api/building";
-import Storage from "../../user/userStorage";
 
 import { Form, Formik, ErrorMessage, Field } from "formik";
-import { FormGroup, FloatingLabel} from 'react-bootstrap'
+import { FormGroup, FloatingLabel, Button} from 'react-bootstrap'
+import { Link, useParams } from "react-router-dom";
 
 
-type Props = {};
+type Props = {
+  streetId: number,
+  plotId: number,
+};
 
 type State = {
   errorMsg: string,
   submitted: boolean,
 };
 
-export default class BuildingCreate extends Component<Props, State> {
+class BuildingCreate extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.handleBuildingCreate = this.handleBuildingCreate.bind(this);
@@ -29,26 +31,6 @@ export default class BuildingCreate extends Component<Props, State> {
 
   validationSchema() {
     return Yup.object().shape({
-      streetName: Yup.string()
-        .test(
-          "len",
-          "The building name must be between 4 and 100 characters.",
-          (val: any) =>
-            val &&
-            val.toString().length >= 4 &&
-            val.toString().length <= 100
-        )
-        .required("This field is required!"),
-      lotNo: Yup.number()
-      .test(
-        "interval",
-        "Value should be between 1 and 99999",
-        (val: any) =>
-          val &&
-          val >= 1 &&
-          val <= 99999
-      )
-      .required("This field is required!"),
       streetNumber: Yup.string()
       .test(
         "len",
@@ -62,11 +44,20 @@ export default class BuildingCreate extends Component<Props, State> {
       type: Yup.string()
       .test(
         "len",
-        "The street number name must be between 3 and 20 characters.",
+        "The type name must be between 3 and 20 characters.",
         (val: any) =>
           val &&
           val.toString().length >= 3 &&
           val.toString().length <= 20
+      )
+      .required("This field is required!"),
+      postalCode: Yup.string()
+      .test(
+        "len",
+        "The postal code must be 5 characters.",
+        (val: any) =>
+          val &&
+          val.toString().length === 5
       )
       .required("This field is required!"),
       areaSize: Yup.number()
@@ -105,29 +96,26 @@ export default class BuildingCreate extends Component<Props, State> {
         "Value should be between 1 and 999999999",
         (val: any) =>
           val &&
-          val > 0 &&
+          val > 1 &&
           val < 999999999
       )
       .required("This field is required!"),
     });
   }
 
-  async handleBuildingCreate(formValue: { streetName: string; lotNo: number; streetNumber: string; type: string; areaSize: number; floorCount: number; year: number; price: number }) {
-    const { streetName, lotNo, streetNumber, type, areaSize, floorCount, year, price } = formValue;
-
-    let successState = false;
+  async handleBuildingCreate(formValue: { streetNumber: string; postalCode: string; type: string; areaSize: number; floorCount: number; year: number; price: number }) {
+    const { streetNumber, postalCode, type, areaSize, floorCount, year, price } = formValue;
 
     this.setState({
       errorMsg: "",
       submitted: false,
     });
 
-    // no need for await anymore. this.setState will cause a rerendering.
-    let [responseStatus, responseMsg] = await Building.create(streetName, lotNo, streetNumber, type, areaSize, floorCount, year, price)
+    let [responseStatus, responseMsg] = await Building.create(this.props.streetId, this.props.plotId, streetNumber, postalCode, type, areaSize, floorCount, year, price);
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses
     if (responseStatus > 199 && responseStatus < 300) {
-      successState = true;
+      //
     } else {
       this.setState({
         errorMsg: responseMsg,
@@ -143,9 +131,8 @@ export default class BuildingCreate extends Component<Props, State> {
     const { errorMsg, submitted } = this.state
 
     const initialValues = {
-      streetName: "",
-      lotNo: 0,
       streetNumber: "",
+      postalCode: "",
       type: "",
       areaSize: 0,
       floorCount: 0,
@@ -166,32 +153,6 @@ export default class BuildingCreate extends Component<Props, State> {
             <Form>
               <div>
               <FormGroup>
-                <FloatingLabel controlId="floatingName" label="Street name">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="streetName" type="text" className="form-control" placeholder="example building name" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="streetName"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
-              <FormGroup>
-                <FloatingLabel controlId="floatingCity" label="Lot No.">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="lotNo" type="number" className="form-control" placeholder="example city name" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="lotNo"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
-              <FormGroup>
                 <FloatingLabel controlId="floatingDistrict" label="Street number">
                   {/* A placeholder is required on each <Form.Control> */}
                   <Field name="streetNumber" type="text" className="form-control" placeholder="example district" />
@@ -205,9 +166,22 @@ export default class BuildingCreate extends Component<Props, State> {
               <br></br>
 
               <FormGroup>
-                <FloatingLabel controlId="floatingPostalCode" label="Type">
+                <FloatingLabel controlId="floatingPostalCode" label="PostalCode">
                   {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="type" type="text" className="form-control" placeholder="12345" />
+                  <Field name="postalCode" type="text" className="form-control" placeholder="12345" />
+                </FloatingLabel>
+                <ErrorMessage
+                  name="postalCode"
+                  component="div"
+                  className="alert alert-danger"
+                />
+              </FormGroup>
+              <br></br>
+
+              <FormGroup>
+                <FloatingLabel controlId="floatingType" label="Type">
+                  {/* A placeholder is required on each <Form.Control> */}
+                  <Field name="type" type="text" className="form-control" placeholder="apartment" />
                 </FloatingLabel>
                 <ErrorMessage
                   name="type"
@@ -216,7 +190,6 @@ export default class BuildingCreate extends Component<Props, State> {
                 />
               </FormGroup>
               <br></br>
-
 
               <FormGroup>
                 <FloatingLabel controlId="floatingAddressCount" label="Area size">
@@ -296,6 +269,11 @@ export default class BuildingCreate extends Component<Props, State> {
                 </div>
               )}
 
+              <Link to={"/building/list/" + this.props.streetId + "/" + this.props.plotId}>
+                <Button variant="dark">
+                  Go back
+                </Button>
+              </Link>
 
             </Form>
           </Formik>
@@ -303,4 +281,13 @@ export default class BuildingCreate extends Component<Props, State> {
       </div>
     );
   }
+}
+
+export default function BuildingCreateWrapper() {
+  const { streetId, plotId } = useParams();
+  return (
+      <div>
+          <BuildingCreate streetId={parseInt(streetId as string)} plotId={parseInt(plotId as string)}/>
+      </div>
+  );
 }
