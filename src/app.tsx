@@ -39,6 +39,7 @@ import BuildingUpdateWrapper from './components/building/buildingUpdate';
 import EventBus from "./global/eventBus";
 import Storage from "./user/userStorage";
 import {userContext, IUserContext} from './user/userContext';
+import Footer from './components/footer';
 
 type Props = {};
 
@@ -158,82 +159,88 @@ class App extends Component<Props, State> {
           )}
         </nav>
 
-        <div className="container mt-3">
-          {this.state.user ? (
-            <Routes>
-              {/* https://reactrouter.com/docs/en/v6/upgrading/v5
-              If you want to match more of the URL because you have child routes use 
-              a trailing * as in <Route path="users/*">. */}
+        <div className="page-container">
+          <div className="content-wrap">
 
-              <Route path="/" element={<Home />} />
-              <Route path="/home" element={<Home />} />
-              {/* if logged in, only show registration page for admin user */}
-              {this.state.user.role === "ADMIN" && (
-                <Route path="/register" element={<Register />} />
+            <div className="container mt-3">
+              {this.state.user ? (
+                <Routes>
+                  {/* https://reactrouter.com/docs/en/v6/upgrading/v5
+                  If you want to match more of the URL because you have child routes use 
+                  a trailing * as in <Route path="users/*">. */}
+
+                  <Route path="/" element={<Home />} />
+                  <Route path="/home" element={<Home />} />
+                  {/* if logged in, only show registration page for admin user */}
+                  {this.state.user.role === "ADMIN" && (
+                    <Route path="/register" element={<Register />} />
+                  )}
+
+                  {/* Profile needs to be wrapped in context 
+                  element for context to be passed over to the profile element. */}
+                  {/* /profile and /login both loading "Profile" element is a workaround
+                  implemented due to limitations of "Navigate" component */}
+                  {['profile', 'login'].map(path => <Route key={path} path={path} element={
+                    <userContext.Provider value={value}>
+                      <Profile />
+                    </userContext.Provider>
+                  } />)}
+
+                  {/* <Route path="/profile" element={
+                    <userContext.Provider value={value}>
+                      <Profile />
+                    </userContext.Provider>
+                  }></Route> */}
+
+                  <Route path="/register" element={<Register />} />
+
+                  {/* <Route path="/street/list" element={<StreetList />} /> */}
+                  <Route path="/street/list" element={<StreetList loggedIn={true} />} />
+                  <Route path="/street/create" element={<StreetCreate />} />
+                  <Route path="/street/read/:streetId" element={<StreetReadWrapper />} />
+                  <Route path="/street/update/:streetId" element={<StreetUpdateWrapper />} />
+
+                  <Route path="/plot/list/:streetId" element={<PlotListWrapper loggedIn={true} />} />
+                  <Route path="/plot/create/:streetId" element={<PlotCreateWrapper />} />
+                  <Route path="/plot/read/:streetId/:plotId" element={<PlotReadWrapper />} />
+                  <Route path="/plot/update/:streetId/:plotId" element={<PlotUpdateWrapper />} />
+
+                  <Route path="/building/list/:streetId/:plotId" element={<BuildingListWrapper loggedIn={true} />} />
+                  <Route path="/building/create/:streetId/:plotId" element={<BuildingCreateWrapper />} />
+                  <Route path="/building/read/:streetId/:plotId/:buildingId" element={<BuildingReadWrapper />} />
+                  <Route path="/building/update/:streetId/:plotId/:buildingId" element={<BuildingUpdateWrapper />} />
+
+                  <Route path="*" element={<PageNotFound />} />
+                </Routes>
+              ) : (
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/login" element={
+                    <userContext.Provider value={value}>
+                      <Login />
+                    </userContext.Provider>
+                  }></Route>
+                  <Route path="/register" element={<Register />} />
+
+                  <Route path="/street/list" element={<StreetList loggedIn={false} />} />
+                  <Route path="/street/create" element={<StreetCreate />} />
+                  <Route path="/street/read/:streetId" element={<StreetReadWrapper />} />
+
+                  <Route path="/plot/list/:streetId" element={<PlotListWrapper loggedIn={false} />} />
+                  <Route path="/plot/create/:streetId" element={<PlotCreateWrapper />} />
+                  <Route path="/plot/read/:streetId/:plotId" element={<PlotReadWrapper />} />
+
+                  <Route path="/building/list/:streetId/:plotId" element={<BuildingListWrapper loggedIn={false} />} />
+                  <Route path="/building/create/:streetId/:plotId" element={<BuildingCreateWrapper />} />
+                  <Route path="/building/read/:streetId/:plotId/:buildingId" element={<BuildingReadWrapper />} />
+
+                  <Route path="*" element={<PageNotFound />} />
+                </Routes>
               )}
-
-              {/* Profile needs to be wrapped in context 
-              element for context to be passed over to the profile element. */}
-              {/* /profile and /login both loading "Profile" element is a workaround
-              implemented due to limitations of "Navigate" component */}
-              {['profile', 'login'].map(path => <Route key={path} path={path} element={
-                <userContext.Provider value={value}>
-                  <Profile />
-                </userContext.Provider>
-              } />)}
-
-              {/* <Route path="/profile" element={
-                <userContext.Provider value={value}>
-                  <Profile />
-                </userContext.Provider>
-              }></Route> */}
-
-              <Route path="/register" element={<Register />} />
-
-              {/* <Route path="/street/list" element={<StreetList />} /> */}
-              <Route path="/street/list" element={<StreetList loggedIn={true} />} />
-              <Route path="/street/create" element={<StreetCreate />} />
-              <Route path="/street/read/:streetId" element={<StreetReadWrapper />} />
-              <Route path="/street/update/:streetId" element={<StreetUpdateWrapper />} />
-
-              <Route path="/plot/list/:streetId" element={<PlotListWrapper loggedIn={true} />} />
-              <Route path="/plot/create/:streetId" element={<PlotCreateWrapper />} />
-              <Route path="/plot/read/:streetId/:plotId" element={<PlotReadWrapper />} />
-              <Route path="/plot/update/:streetId/:plotId" element={<PlotUpdateWrapper />} />
-
-              <Route path="/building/list/:streetId/:plotId" element={<BuildingListWrapper loggedIn={true} />} />
-              <Route path="/building/create/:streetId/:plotId" element={<BuildingCreateWrapper />} />
-              <Route path="/building/read/:streetId/:plotId/:buildingId" element={<BuildingReadWrapper />} />
-              <Route path="/building/update/:streetId/:plotId/:buildingId" element={<BuildingUpdateWrapper />} />
-
-              <Route path="*" element={<PageNotFound />} />
-            </Routes>
-          ) : (
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/login" element={
-                <userContext.Provider value={value}>
-                  <Login />
-                </userContext.Provider>
-              }></Route>
-              <Route path="/register" element={<Register />} />
-
-              <Route path="/street/list" element={<StreetList loggedIn={false} />} />
-              <Route path="/street/create" element={<StreetCreate />} />
-              <Route path="/street/read/:streetId" element={<StreetReadWrapper />} />
-
-              <Route path="/plot/list/:streetId" element={<PlotListWrapper loggedIn={false} />} />
-              <Route path="/plot/create/:streetId" element={<PlotCreateWrapper />} />
-              <Route path="/plot/read/:streetId/:plotId" element={<PlotReadWrapper />} />
-
-              <Route path="/building/list/:streetId/:plotId" element={<BuildingListWrapper loggedIn={false} />} />
-              <Route path="/building/create/:streetId/:plotId" element={<BuildingCreateWrapper />} />
-              <Route path="/building/read/:streetId/:plotId/:buildingId" element={<BuildingReadWrapper />} />
-
-              <Route path="*" element={<PageNotFound />} />
-            </Routes>
-          )}
+            </div>
+          </div>
+          <Footer />
         </div>
       </div>
     );
