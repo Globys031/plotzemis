@@ -197,7 +197,7 @@ class BuildingUpdate extends Component<Props, State> {
         </div>
 
         {building.streetNumber && (
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
               <th>User Id</th>

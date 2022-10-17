@@ -1,23 +1,24 @@
 .card-container.card {
-  max-width: 350px !important;
-  padding: 40px 40px;
+  max-width: 30vh !important;
+  padding: 3.04vh 3.04vh;
 }
 .card {
   background-color: #f7f7f7;
-  padding: 20px 25px 30px;
-  margin: 0 auto 25px;
-  margin-top: 50px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  border-radius: 2px;
-  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  padding: 1.5209vh 1.901vh 2.281vh;
+  margin: 0 auto 1.901vh;
+  margin-top: 3.8vh;
+  -moz-border-radius: 0.15209vh;
+  -webkit-border-radius: 0.15209vh;
+  border-radius: 0.15209vh;
+  -moz-box-shadow: 0vh 0.15209vh 0.15209vh rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0vh 0.15209vh 0.15209vh rgba(0, 0, 0, 0.3);
+  box-shadow: 0vh 0.15209vh 0.15209vh rgba(0, 0, 0, 0.3);
 }
+
 .profile-img-card {
-  width: 96px;
-  height: 96px;
-  margin: 0 auto 10px;
+  width: 7.3vh;
+  height: 7.3vh;
+  margin: 0 auto 0.76vh;
   display: block;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -39,3 +40,24 @@
   flex: 1;
 }
 /*  */
+
+:root {
+  --bs-body-line-height: 1.5vh;
+  --bs-body-font-size: calc(1rem + 0.5vh);
+}
+
+.btn {
+  --bs-btn-font-size: calc(1rem + 0.25vw);
+}
+
+.form-control {
+  font-size: calc(1rem + 0.5vh);
+}
+
+.form-floating>.form-control, .form-floating>.form-control-plaintext, .form-floating>.form-select {
+  height: calc(3.5rem + 1vh);
+}
+
+table {
+  font-size: calc(1rem + 0.5vh);
+}

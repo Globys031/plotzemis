@@ -83,7 +83,7 @@ export default class StreetList extends Component<Props, State> {
 
     return (
       <div className="col-md-12">
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
               <th>Street Id</th>

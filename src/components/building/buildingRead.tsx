@@ -58,7 +58,7 @@ class BuildingRead extends Component<Props, State> {
     return (
       <div className="col-md-12">
         {building.streetNumber && (
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
               <th>User Id</th>

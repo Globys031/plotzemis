@@ -158,7 +158,6 @@ class App extends Component<Props, State> {
             </div>
           )}
         </nav>
-
         <div className="page-container">
           <div className="content-wrap">
 
