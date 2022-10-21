@@ -87,7 +87,7 @@ Nuskaičius įrašą, šis pateikiamas lentelės forma.
 
 ### Update
 
-Įrašus gali keisti tik vartotojas, kuris juos sukūrė.
+Įrašus gali keisti tik vartotojas, kuris juos sukūrė. Prie pačio įrašo atnaujinimo puslapio prieinama per sąrašo puslapį.
 
 ![Screenshot](docImages/Update.jpg)
 
@@ -96,6 +96,12 @@ Nuskaičius įrašą, šis pateikiamas lentelės forma.
 Įrašus naikinti gali administratoriai ir vartotojai, kurie juos sukūrė.
 
 ![Screenshot](docImages/Remove.jpg)
+
+### Hierarchinis ryšys
+
+Plotai ir pastatai prieinami iš aukščiau hierarchioje esančio objekto sąrašo. Žemiau vaizduojamas pavyzdys kai iš gatvių sąrašo buvo paspaustas mygtukas `List plots`.
+
+![Screenshot](docImages/plotList.jpg)
 
 
 ## API specifikacija
