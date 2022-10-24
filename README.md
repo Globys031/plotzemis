@@ -986,10 +986,11 @@ Atsako kodas: 200
 
 ## Išvados
 
-- Atsako kodai aiškiai pateikia, kokia galima problema, net jeigu negrąžinamas užklausos kūnas
-- Frontend'o aplikacija turi gebėti dinamiškai prisitaikyti prie įvairių įrenginio apribojimų. Pakeitus naršyklės lango dydį, frontend'as neturėtų sugriūti.
-- Patogiau aplikaciją įkelti į cloud'ą, jeigu ji supakuota į docker konteinerį. Arba jeigu dar kitaip galima suautomatizuoti programos paleidimą.
-- Būtina duomenų validacija backend'o pusėje. Neužtenka pasitikėti, jog frontend'o pusės perduodami duomenys bus tinkami.
+- Atsako kodai aiškiai pateikia, kokia galima problema, net jeigu negrąžinamas užklausos kūnas.
+- Naudojant Docker palengvėja programos vystymo procesas ir talpinimas debesyje. Užtenka įkelti supakuotą Docker vaizdą (angl. "image") ir atidaryti tinkamus prievardus (angl. "port") aplikacijai vykdyti.
+- Sistemoje naudojamas JWT (angl. "JSON Web Token") autentifikacijos metodas. Šiuo būdu įgyvendinamos vartotojų rolės. Taip atskiriama, kurie resursai prieinami ar neprieinami klientui atitinkamo lygio naudotojui.
+- Duomenų validacija vykdoma serverio pusėje. Taip užtikrinama, kad vartotojas neapeis grafinės sąsajos ir piktybiškai pateikti duomenys nesukels sistemos trikdžių.
+- Kliento pusės aplikacija geba dinamiškai prisitaikyti prie įvairių įrenginio apribojimų. Pakeitus naršyklės lango dydį, komponentai išlieka klientui prieinami ir neapsunkina vartotojo sąsajos.
 
 ## Šaltiniai
 
