@@ -6,6 +6,7 @@ import { Table, Button } from 'react-bootstrap'
 import { IPlot, IPlotArr } from "../../types/plot";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import MediaQuery from 'react-responsive'
 
 type Props = {
   loggedIn: boolean,
@@ -81,112 +82,238 @@ class PlotList extends Component<Props, State> {
 
     return (
       <div className="col-md-12">
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Street Id</th>
-              <th>User Id</th>
-              <th>Lot number</th>
-              <th>Area size</th>
-              <th>Purpose</th>
-              <th>Type</th>
-              <th colSpan={5}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-          {
-            plots.map((plot : IPlot) => (
-              <tr key={plot.id}>
-                  <td>{plot.id}</td>
-                  <td>{plot.userId}</td>
-                  <td>{plot.streetId}</td>
-                  <td>{plot.lotNo}</td>
-                  <td>{plot.areaSize}</td>
-                  <td>{plot.purpose}</td>
-                  <td>{plot.type}</td>
-                  <td>
-                    <Link to={"/building/list/" + this.props.streetId + "/" + plot.id}>
-                      <Button variant="dark">
-                        List buildings
-                      </Button>
-                    </Link>
-                  </td>
-                  {this.props.loggedIn && (
-                    <td>
-                      <Link to={"/building/create/" + this.props.streetId + "/" + plot.id}>
-                        <Button variant="dark">
-                          Add building
-                        </Button>
-                      </Link>
-                    </td>
-                  )}
-                  <td>
-                    <Link to={"/plot/read/" + this.props.streetId + "/" + plot.id}>
-                      <Button variant="dark">
-                        Read plot
-                      </Button>
-                    </Link>
-                  </td>
-                  {this.props.loggedIn && (
-                    <td>
-                      <Button
-                        variant="dark"
-                        disabled={isLoadingRemove}
-                        // onClick={this.handleStreetRemove(street.id)}
-                        onClick={() => this.handlePlotRemove(plot.id)}
-                      >
-                        {isLoadingRemove ? 'Loading…' : 'Remove plot'}
-                      </Button>
-                    </td>
-                  )}
-                  {this.props.loggedIn && (
-                    <td>
-                      <Link to={"/plot/update/" + this.props.streetId + "/" + plot.id}>
-                        <Button variant="dark">
-                          Update plot
-                        </Button>
-                      </Link>
-                    </td>
-                  )}
+        <MediaQuery minWidth={1000}>
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Street Id</th>
+                <th>User Id</th>
+                <th>Lot number</th>
+                <th>Area size</th>
+                <th>Purpose</th>
+                <th>Type</th>
+                <th colSpan={5}>Actions</th>
               </tr>
-            ))
-          }
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+            {
+              plots.map((plot : IPlot) => (
+                <tr key={plot.id}>
+                    <td>{plot.id}</td>
+                    <td>{plot.userId}</td>
+                    <td>{plot.streetId}</td>
+                    <td>{plot.lotNo}</td>
+                    <td>{plot.areaSize}</td>
+                    <td>{plot.purpose}</td>
+                    <td>{plot.type}</td>
+                    <td>
+                      <Link to={"/building/list/" + this.props.streetId + "/" + plot.id}>
+                        <Button variant="dark">
+                          List buildings
+                        </Button>
+                      </Link>
+                    </td>
+                    {this.props.loggedIn && (
+                      <td>
+                        <Link to={"/building/create/" + this.props.streetId + "/" + plot.id}>
+                          <Button variant="dark">
+                            Add building
+                          </Button>
+                        </Link>
+                      </td>
+                    )}
+                    <td>
+                      <Link to={"/plot/read/" + this.props.streetId + "/" + plot.id}>
+                        <Button variant="dark">
+                          Read plot
+                        </Button>
+                      </Link>
+                    </td>
+                    {this.props.loggedIn && (
+                      <td>
+                        <Button
+                          variant="dark"
+                          disabled={isLoadingRemove}
+                          // onClick={this.handleStreetRemove(street.id)}
+                          onClick={() => this.handlePlotRemove(plot.id)}
+                        >
+                          {isLoadingRemove ? 'Loading…' : 'Remove plot'}
+                        </Button>
+                      </td>
+                    )}
+                    {this.props.loggedIn && (
+                      <td>
+                        <Link to={"/plot/update/" + this.props.streetId + "/" + plot.id}>
+                          <Button variant="dark">
+                            Update plot
+                          </Button>
+                        </Link>
+                      </td>
+                    )}
+                </tr>
+              ))
+            }
+            </tbody>
+          </Table>
 
-        {this.props.loggedIn && (
-          <Link to={"/plot/create/" + this.props.streetId}>
-            <Button variant="primary">
-              Add new plot
-            </Button>
-          </Link>
-        )}
-
-        {errorMsg && (
           <div className="form-group">
-            <div className="alert alert-danger" role="alert">
-              {errorMsg}
+          {this.props.loggedIn && (
+            <div>
+              <Link to={"/plot/create/" + this.props.streetId}>
+                <Button variant="primary">
+                  Add new plot
+                </Button>
+              </Link>
             </div>
+          )}
           </div>
-        )}
 
-        {(errorMsg === "" && submittedRemove) && (
+          {errorMsg && (
+            <div className="form-group">
+              <div className="alert alert-danger" role="alert">
+                {errorMsg}
+              </div>
+            </div>
+          )}
+
+          {(errorMsg === "" && submittedRemove) && (
+            <div className="form-group">
+              <div
+                className="alert alert-success"
+                role="alert"
+              >
+                Removed successfully
+              </div>
+            </div>
+          )}
+
+          <br></br>
           <div className="form-group">
-            <div
-              className="alert alert-success"
-              role="alert"
-            >
-              Removed successfully
-            </div>
+            <Link to={"/street/list/"}>
+              <Button variant="dark">
+                Go back
+              </Button>
+            </Link>
           </div>
-        )}
+        </MediaQuery>
 
-        <Link to={"/street/list/"}>
-          <Button variant="dark">
-            Go back
-          </Button>
-        </Link>
+        <MediaQuery maxWidth={1000}>
+          <Table striped bordered hover responsive className="mobile-font">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Street Id</th>
+                <th>User Id</th>
+                <th>Lot number</th>
+                <th>Area size</th>
+                <th>Purpose</th>
+                <th>Type</th>
+                <th colSpan={5}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            {
+              plots.map((plot : IPlot) => (
+                <tr key={plot.id}>
+                    <td>{plot.id}</td>
+                    <td>{plot.userId}</td>
+                    <td>{plot.streetId}</td>
+                    <td>{plot.lotNo}</td>
+                    <td>{plot.areaSize}</td>
+                    <td>{plot.purpose}</td>
+                    <td>{plot.type}</td>
+                    <td>
+                      <Link to={"/building/list/" + this.props.streetId + "/" + plot.id}>
+                        <Button variant="dark">
+                          List buildings
+                        </Button>
+                      </Link>
+                    </td>
+                    {this.props.loggedIn && (
+                      <td>
+                        <Link to={"/building/create/" + this.props.streetId + "/" + plot.id}>
+                          <Button variant="dark">
+                            Add building
+                          </Button>
+                        </Link>
+                      </td>
+                    )}
+                    <td>
+                      <Link to={"/plot/read/" + this.props.streetId + "/" + plot.id}>
+                        <Button variant="dark">
+                          Read plot
+                        </Button>
+                      </Link>
+                    </td>
+                    {this.props.loggedIn && (
+                      <td>
+                        <Button
+                          variant="dark"
+                          disabled={isLoadingRemove}
+                          // onClick={this.handleStreetRemove(street.id)}
+                          onClick={() => this.handlePlotRemove(plot.id)}
+                        >
+                          {isLoadingRemove ? 'Loading…' : 'Remove plot'}
+                        </Button>
+                      </td>
+                    )}
+                    {this.props.loggedIn && (
+                      <td>
+                        <Link to={"/plot/update/" + this.props.streetId + "/" + plot.id}>
+                          <Button variant="dark">
+                            Update plot
+                          </Button>
+                        </Link>
+                      </td>
+                    )}
+                </tr>
+              ))
+            }
+            </tbody>
+          </Table>
+
+          <div className="form-group-mobile">
+          <br></br>
+          {this.props.loggedIn && (
+            <div>
+              <Link to={"/plot/create/" + this.props.streetId}>
+                <Button variant="primary">
+                  Add new plot
+                </Button>
+              </Link>
+            </div>
+          )}
+          </div>
+
+          {errorMsg && (
+            <div className="form-group-mobile">
+              <div className="alert alert-danger" role="alert">
+                {errorMsg}
+              </div>
+            </div>
+          )}
+
+          {(errorMsg === "" && submittedRemove) && (
+            <div className="form-group-mobile">
+              <div
+                className="alert alert-success"
+                role="alert"
+              >
+                Removed successfully
+              </div>
+            </div>
+          )}
+
+          <br></br>
+          <div className="form-group-mobile">
+            <Link to={"/street/list/"}>
+              <Button variant="dark">
+                Go back
+              </Button>
+            </Link>
+          </div>
+        </MediaQuery>
 
       </div>
     );

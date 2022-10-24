@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { Navigate } from "react-router-dom";
+import MediaQuery from 'react-responsive'
 
 import {userContext} from '../user/userContext';
 import Storage from "../user/userStorage";
@@ -46,30 +47,65 @@ export default class Profile extends Component<Props, State> {
       return <Navigate to={this.state.redirect} />
     }
 
+    // mobile-font
+
     return (
       <div className="container">
+        <MediaQuery minWidth={1000}>
 
-      {this.context.user && (
-      <div>
-        <header className="jumbotron">
-          <h3>
-            <strong>{this.context.user?.username}</strong> Profile
-          </h3>
-        </header>
-        <p>
-          <strong>Id:</strong>{" "}
-          {this.context.user?.userId}
-        </p>
-        <p>
-          <strong>Email:</strong>{" "}
-          {this.context.user?.email}
-        </p>
-        <p>
-          <strong>Role:</strong>{" "}
-          {this.context.user?.role}
-        </p>
-      </div>
-      )}
+          {this.context.user && (
+          <div>
+            <header className="jumbotron">
+              <h3>
+                <strong>{this.context.user?.username}</strong> Profile
+              </h3>
+            </header>
+            <p>
+              <strong>Id:</strong>{" "}
+              {this.context.user?.userId}
+            </p>
+            <p>
+              <strong>Email:</strong>{" "}
+              {this.context.user?.email}
+            </p>
+            <p>
+              <strong>Role:</strong>{" "}
+              {this.context.user?.role}
+            </p>
+          </div>
+          )}
+        </MediaQuery>
+
+
+        <MediaQuery maxWidth={1000}>
+          <div className="mobile-font">
+            <div className="container">
+
+            {this.context.user && (
+            <div>
+              <header className="jumbotron mobile-header-font">
+                <h3>
+                  <strong>{this.context.user?.username}</strong> Profile
+                </h3>
+              </header>
+              <p>
+                <strong>Id:</strong>{" "}
+                {this.context.user?.userId}
+              </p>
+              <p>
+                <strong>Email:</strong>{" "}
+                {this.context.user?.email}
+              </p>
+              <p>
+                <strong>Role:</strong>{" "}
+                {this.context.user?.role}
+              </p>
+            </div>
+            )}
+            </div>
+          </div>
+        </MediaQuery>
+
       </div>
     );
   }

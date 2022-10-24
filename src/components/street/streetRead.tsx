@@ -6,6 +6,7 @@ import { IStreet } from "../../types/street";
 import { Table, Button} from 'react-bootstrap'
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import MediaQuery from 'react-responsive'
 
 type Props = {
   streetId: number,
@@ -51,55 +52,115 @@ class StreetRead extends Component<Props, State> {
 
     return (
       <div className="col-md-12">
-        {street.name && (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>User Id</th>
-              <th>Street name</th>
-              <th>City</th>
-              <th>District</th>
-              <th>Address Count</th>
-              <th>Street Length</th>
+        <MediaQuery maxWidth={1000}>
+          {street.name && (
+          <Table striped bordered hover responsive className="mobile-font">
+            <thead>
+              <tr>
+                <th>User Id</th>
+                <th>Street name</th>
+                <th>City</th>
+                <th>District</th>
+                <th>Address Count</th>
+                <th>Street Length</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr key={street.id}>
+                <td>{street.userId}</td>
+                <td>{street.name}</td>
+                <td>{street.city}</td>
+                <td>{street.district}</td>
+                <td>{street.addressCount}</td>
+                <td>{street.streetLength}</td>
             </tr>
-          </thead>
-          <tbody>
-              <tr key={street.id}>
-              <td>{street.userId}</td>
-              <td>{street.name}</td>
-              <td>{street.city}</td>
-              <td>{street.district}</td>
-              <td>{street.addressCount}</td>
-              <td>{street.streetLength}</td>
-          </tr>
-          </tbody>
-        </Table>
-        )}
+            </tbody>
+          </Table>
+          )}
 
-        {errorMsg && (
-          <div className="form-group">
-            <div className="alert alert-danger" role="alert">
-              {errorMsg}
+          {errorMsg && (
+            <div className="form-group-mobile">
+              <div className="alert alert-danger" role="alert">
+                {errorMsg}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {(errorMsg === "") && (
-          <div className="form-group">
-            <div
-              className="alert alert-success"
-              role="alert"
-            >
-              Read successfully
+          {(errorMsg === "") && (
+            <div className="form-group-mobile">
+              <div
+                className="alert alert-success"
+                role="alert"
+              >
+                Read successfully
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <Link to={"/street/list"}>
-          <Button variant="dark">
-            Go back
-          </Button>
-        </Link>
+          <br></br>
+          <div className="form-group-mobile">
+            <Link to={"/street/list"}>
+              <Button variant="dark">
+                Go back
+              </Button>
+            </Link>
+          </div>
+        </MediaQuery>
+
+        <MediaQuery minWidth={1000}>
+          {street.name && (
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>User Id</th>
+                <th>Street name</th>
+                <th>City</th>
+                <th>District</th>
+                <th>Address Count</th>
+                <th>Street Length</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr key={street.id}>
+                <td>{street.userId}</td>
+                <td>{street.name}</td>
+                <td>{street.city}</td>
+                <td>{street.district}</td>
+                <td>{street.addressCount}</td>
+                <td>{street.streetLength}</td>
+            </tr>
+            </tbody>
+          </Table>
+          )}
+
+          {errorMsg && (
+            <div className="form-group">
+              <div className="alert alert-danger" role="alert">
+                {errorMsg}
+              </div>
+            </div>
+          )}
+
+          {(errorMsg === "") && (
+            <div className="form-group">
+              <div
+                className="alert alert-success"
+                role="alert"
+              >
+                Read successfully
+              </div>
+            </div>
+          )}
+
+          <br></br>
+          <div className="form-group">
+            <Link to={"/street/list"}>
+              <Button variant="dark">
+                Go back
+              </Button>
+            </Link>
+          </div>
+        </MediaQuery>
       </div>
     );
   }

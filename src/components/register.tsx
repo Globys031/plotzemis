@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { Navigate } from "react-router-dom";
+import MediaQuery from 'react-responsive'
 import * as Yup from "yup";
 
 import Authentication from "../api/auth";
@@ -7,6 +8,7 @@ import Storage from "../user/userStorage";
 
 import { Form, Formik, ErrorMessage, Field } from "formik";
 import { FormGroup, FloatingLabel} from 'react-bootstrap'
+import { useMediaQuery } from 'react-responsive'
 
 
 type Props = {};
@@ -141,115 +143,238 @@ export default class Register extends Component<Props, State> {
 
     return (
       <div className="col-md-12">
-        <div className="card card-container">
-          <img
-            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card"
-          />
-          {/* used as a hook to initialize form values */}
-          <Formik
-            initialValues={initialValues}
-            validationSchema={this.validationSchema}
-            onSubmit={this.handleRegister}
-          >
-            {/* acts as an HTML form tag to wrap form controls. */}
-            <Form>
-              <div>
+        <MediaQuery maxWidth={1000}>
+          <div className="card card-container-mobile">
+            <img
+              src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+              alt="profile-img"
+              className="profile-img-card"
+            />
+            {/* used as a hook to initialize form values */}
+            <Formik
+              initialValues={initialValues}
+              validationSchema={this.validationSchema}
+              onSubmit={this.handleRegister}
+            >
+              {/* acts as an HTML form tag to wrap form controls. */}
+              <Form>
+                <div>
 
-              <FormGroup>
-                <FloatingLabel controlId="floatingUsername" label="Username">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="username" type="text" className="form-control" placeholder="exampleuser" />
-                </FloatingLabel>
+                <FormGroup>
+                  <FloatingLabel controlId="floatingUsername" label="Username" id="floatingLabel">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="username" type="text" className="form-control form-control-mobile" placeholder="exampleuser" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="username"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                </FormGroup>
+                <br></br>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingEmail" label="Email" id="floatingLabel">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="email" type="email" className="form-control form-control-mobile" placeholder="example@email.com" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                </FormGroup>
+                <br></br>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingPassword" label="Password" id="floatingLabel">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="password" type="password" className="form-control form-control-mobile" placeholder="examplepassword" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                </FormGroup>
+                <br></br>
+
+                {/* Bootstrap react components interfere with formik*/}
+                {/* <Field component={FormSelect} name="role"> */}
+                <Field as="select" className="form-select" name="role" hidden={notAdmin}>
+                  <option>Select user role</option>
+                  <option value="USER">Regular user</option>
+                  <option value="MOD">Moderator</option>
+                  <option value="ADMIN">Administrator</option>
+                </Field>
                 <ErrorMessage
-                  name="username"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
+                    name="role"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                <br hidden={notAdmin}></br>
 
-              <FormGroup>
-                <FloatingLabel controlId="floatingEmail" label="Email">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="email" type="email" className="form-control" placeholder="example@email.com" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
+                  <div className="form-group-mobile">
+                    <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                      {loading && (
+                        <span className="spinner-border spinner-border-sm"></span>
+                      )}
+                      <span>Sign up</span>
+                    </button>
+                  </div>
 
-              <FormGroup>
-                <FloatingLabel controlId="floatingPassword" label="Password">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="password" type="password" className="form-control" placeholder="examplepassword" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
-
-              {/* Bootstrap react components interfere with formik*/}
-              {/* <Field component={FormSelect} name="role"> */}
-              <Field as="select" className="form-select" name="role" hidden={notAdmin}>
-                <option>Select user role</option>
-                <option value="USER">Regular user</option>
-                <option value="MOD">Moderator</option>
-                <option value="ADMIN">Administrator</option>
-              </Field>
-              <ErrorMessage
-                  name="role"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              <br hidden={notAdmin}></br>
-
-                <div className="form-group">
-                  <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                    {loading && (
-                      <span className="spinner-border spinner-border-sm"></span>
-                    )}
-                    <span>Sign up</span>
-                  </button>
                 </div>
 
-              </div>
+                {errorMsg && (
+                  <div className="form-group-mobile">
+                    <div
+                      className="alert alert-danger"
+                      role="alert"
+                    >
+                      {errorMsg}
+                    </div>
+                  </div>
+                )}
+                {(errorMsg === "" && submitted) && (
+                  <div className="form-group-mobile">
+                    <div
+                      className="alert alert-success"
+                      role="alert"
+                    >
+                      Successful registration. Redirecting shortly.
+                    </div>
+                  </div>
+                )}
+                {/* redirect a couple seconds after successful registration */}
+                {(redirect) && (
+                  <Navigate to="/login"></Navigate>
+                )}
+              </Form>
+            </Formik>
+          </div>
+        </MediaQuery>
 
-              {errorMsg && (
-                <div className="form-group">
-                  <div
+        <MediaQuery minWidth={1000}>
+          <div className="card card-container">
+            <img
+              src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+              alt="profile-img"
+              className="profile-img-card"
+            />
+            {/* used as a hook to initialize form values */}
+            <Formik
+              initialValues={initialValues}
+              validationSchema={this.validationSchema}
+              onSubmit={this.handleRegister}
+            >
+              {/* acts as an HTML form tag to wrap form controls. */}
+              <Form>
+                <div>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingUsername" label="Username">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="username" type="text" className="form-control" placeholder="exampleuser" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="username"
+                    component="div"
                     className="alert alert-danger"
-                    role="alert"
-                  >
-                    {errorMsg}
+                  />
+                </FormGroup>
+                <br></br>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingEmail" label="Email">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="email" type="email" className="form-control" placeholder="example@email.com" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+                </FormGroup>
+                <br></br>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingPassword" label="Password">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="password" type="password" className="form-control" placeholder="examplepassword" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+                </FormGroup>
+                <br></br>
+
+                {/* Bootstrap react components interfere with formik*/}
+                {/* <Field component={FormSelect} name="role"> */}
+                <Field as="select" className="form-select" name="role" hidden={notAdmin}>
+                  <option>Select user role</option>
+                  <option value="USER">Regular user</option>
+                  <option value="MOD">Moderator</option>
+                  <option value="ADMIN">Administrator</option>
+                </Field>
+                <ErrorMessage
+                    name="role"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+                <br hidden={notAdmin}></br>
+
+                  <div className="form-group">
+                    <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                      {loading && (
+                        <span className="spinner-border spinner-border-sm"></span>
+                      )}
+                      <span>Sign up</span>
+                    </button>
                   </div>
+
                 </div>
-              )}
-              {(errorMsg === "" && submitted) && (
-                <div className="form-group">
-                  <div
-                    className="alert alert-success"
-                    role="alert"
-                  >
-                    Successful registration. Redirecting shortly.
+
+                {errorMsg && (
+                  <div className="form-group">
+                    <div
+                      className="alert alert-danger"
+                      role="alert"
+                    >
+                      {errorMsg}
+                    </div>
                   </div>
-                </div>
-              )}
-              {/* redirect a couple seconds after successful registration */}
-              {(redirect) && (
-                <Navigate to="/login"></Navigate>
-              )}
-            </Form>
-          </Formik>
-        </div>
+                )}
+                {(errorMsg === "" && submitted) && (
+                  <div className="form-group">
+                    <div
+                      className="alert alert-success"
+                      role="alert"
+                    >
+                      Successful registration. Redirecting shortly.
+                    </div>
+                  </div>
+                )}
+                {/* redirect a couple seconds after successful registration */}
+                {(redirect) && (
+                  <Navigate to="/login"></Navigate>
+                )}
+              </Form>
+            </Formik>
+          </div>
+        </MediaQuery>
       </div>
+
     );
   }
 }
+
+// export default function RegisterWrapper() {
+//   const isMobile = useMediaQuery({ maxWidth: 767 })
+//   return (
+//       <div>
+//           <Register isMobile={isMobile ? true : false}/>
+//       </div>
+//   );
+// }

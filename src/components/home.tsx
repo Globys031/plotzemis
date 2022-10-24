@@ -2,7 +2,6 @@ import { Component } from "react";
 import MapImage from "../images/map.png";
 
 import Alert from 'react-bootstrap/Alert';
-import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 
 type Props = {};

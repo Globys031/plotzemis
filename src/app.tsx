@@ -7,14 +7,15 @@ import { Routes, Route, Link } from "react-router-dom";
 
 // https://react-bootstrap.github.io/getting-started/introduction#stylesheets
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Navbar, Container } from 'react-bootstrap';
+import MediaQuery from 'react-responsive'
 import "./app.css";
 
 import Authentication from "./api/auth";
 
 import IUser from "./types/user";
 
-import Login from "./components/login";
+import LoginWrapper from "./components/login";
 import Register from "./components/register";
 import Profile from "./components/profile";
 import PageNotFound from "./components/404";
@@ -109,55 +110,117 @@ class App extends Component<Props, State> {
 
     return (
       <div>
-        <div>
-        </div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <userContext.Provider value={value}>
-            <Sidebar />
-          </userContext.Provider>
-          <Link to={"/home"} className="navbar-brand">
-          Home
-          </Link>
-          {this.state.user ? (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Dropdown>
-                  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    Welcome, {this.state.user.username}
-                  </Dropdown.Toggle>
 
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="/profile">Profile</Dropdown.Item>
-                    <Dropdown.Item href="/settings">Settings (not yet implemented)</Dropdown.Item>
-                    <Dropdown.Item href="/login" onClick={this.logOut}>Logout</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
+        <MediaQuery minWidth={1000}>
+          <Navbar variant="dark" bg="dark" expand="lg">
+            <Container fluid>
+              <Navbar.Toggle aria-controls="navbarScroll" />
+              <Navbar.Collapse id="navbarScroll">
+                <userContext.Provider value={value}>
+                  <Sidebar />
+                </userContext.Provider>
+                <Link to={"/home"} className="navbar-brand">
+                  Home
+                </Link>
+                {this.state.user ? (
+                  <div className="navbar-nav ml-auto">
+                    <li className="nav-item">
+                      <Dropdown>
+                        <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                          Welcome, {this.state.user.username}
+                        </Dropdown.Toggle>
 
-              {this.state.user.role === "ADMIN" && (
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Register user
-                </Link>
-              </li>
-              )}
-            </div>
-          ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Login
-                </Link>
-              </li>
+                        <Dropdown.Menu>
+                          <Dropdown.Item href="/profile">Profile</Dropdown.Item>
+                          <Dropdown.Item href="/settings">Settings (not yet implemented)</Dropdown.Item>
+                          <Dropdown.Item href="/login" onClick={this.logOut}>Logout</Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </li>
 
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Sign Up
+                    {this.state.user.role === "ADMIN" && (
+                    <li className="nav-item">
+                      <Link to={"/register"} className="nav-link">
+                        Register user
+                      </Link>
+                    </li>
+                    )}
+                  </div>
+                ) : (
+                  <div className="navbar-nav ml-auto">
+                    <li className="nav-item">
+                      <Link to={"/login"} className="nav-link">
+                        Login
+                      </Link>
+                    </li>
+
+                    <li className="nav-item">
+                      <Link to={"/register"} className="nav-link">
+                        Sign Up
+                      </Link>
+                    </li>
+                  </div>
+                )}
+              </Navbar.Collapse>
+            </Container>
+          </Navbar>
+        </MediaQuery>
+
+        <MediaQuery maxWidth={1000}>
+          <Navbar variant="dark" bg="dark" expand="lg">
+            <Container fluid>
+              <Navbar.Toggle aria-controls="navbarScroll" />
+              <Navbar.Collapse id="navbarScroll">
+                <userContext.Provider value={value}>
+                  <Sidebar />
+                </userContext.Provider>
+                <Link to={"/home"} className="navbar-brand mobile-font">
+                  Home
                 </Link>
-              </li>
-            </div>
-          )}
-        </nav>
+                {this.state.user ? (
+                  <div className="navbar-nav ml-auto">
+                    <li className="nav-item">
+                      <Dropdown>
+                        <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="mobile-font">
+                          Welcome, {this.state.user.username}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                          <Dropdown.Item href="/profile" className="mobile-font">Profile</Dropdown.Item>
+                          <Dropdown.Item href="/settings" className="mobile-font">Settings (not yet implemented)</Dropdown.Item>
+                          <Dropdown.Item href="/login" className="mobile-font" onClick={this.logOut}>Logout</Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </li>
+
+                    {this.state.user.role === "ADMIN" && (
+                    <li className="nav-item">
+                      <Link to={"/register"} className="nav-link mobile-font">
+                        Register user
+                      </Link>
+                    </li>
+                    )}
+                  </div>
+                ) : (
+                  <div className="navbar-nav ml-auto">
+                    <li className="nav-item">
+                      <Link to={"/login"} className="nav-link mobile-font">
+                        Login
+                      </Link>
+                    </li>
+
+                    <li className="nav-item">
+                      <Link to={"/register"} className="nav-link mobile-font">
+                        Sign Up
+                      </Link>
+                    </li>
+                  </div>
+                )}
+              </Navbar.Collapse>
+            </Container>
+          </Navbar>
+        </MediaQuery>
+
         <div className="page-container">
           <div className="content-wrap">
 
@@ -217,7 +280,7 @@ class App extends Component<Props, State> {
                   <Route path="/home" element={<Home />} />
                   <Route path="/login" element={
                     <userContext.Provider value={value}>
-                      <Login />
+                      <LoginWrapper />
                     </userContext.Provider>
                   }></Route>
                   <Route path="/register" element={<Register />} />

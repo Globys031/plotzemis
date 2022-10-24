@@ -7,6 +7,7 @@ import { IStreet } from "../../types/street";
 import { Form, Formik, ErrorMessage, Field } from "formik";
 import { FormGroup, FloatingLabel, Table, Button} from 'react-bootstrap'
 import { useParams } from "react-router-dom";
+import MediaQuery from 'react-responsive'
 
 type Props = {
   streetId: number,
@@ -74,139 +75,285 @@ class StreetUpdate extends Component<Props, State> {
 
     return (
       <div className="col-md-12">
-        <div className="card card-container">
-          {/* used as a hook to initialize form values */}
-          <Formik
-            initialValues={initialValues}
-            onSubmit={this.handleStreetUpdate}
-          >
-            {/* acts as an HTML form tag to wrap form controls. */}
-            <Form>
-              <div>
-              <FormGroup>
-                <FloatingLabel controlId="floatingName" label="Name">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="name" type="text" className="form-control" placeholder="example street name" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
+        <MediaQuery maxWidth={1000}>
+          <div className="card card-container-mobile">
+            {/* used as a hook to initialize form values */}
+            <Formik
+              initialValues={initialValues}
+              onSubmit={this.handleStreetUpdate}
+            >
+              {/* acts as an HTML form tag to wrap form controls. */}
+              <Form>
+                <div>
+                <FormGroup>
+                  <FloatingLabel controlId="floatingName" label="Name" id="floatingLabel">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="name" type="text" className="form-control form-control-mobile" placeholder="example street name" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                </FormGroup>
+                <br></br>
 
-              <FormGroup>
-                <FloatingLabel controlId="floatingCity" label="City">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="city" type="text" className="form-control" placeholder="example city name" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="city"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
+                <FormGroup>
+                  <FloatingLabel controlId="floatingCity" label="City" id="floatingLabel">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="city" type="text" className="form-control form-control-mobile" placeholder="example city name" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="city"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                </FormGroup>
+                <br></br>
 
-              <FormGroup>
-                <FloatingLabel controlId="floatingDistrict" label="District">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="district" type="text" className="form-control" placeholder="example district" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="district"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
+                <FormGroup>
+                  <FloatingLabel controlId="floatingDistrict" label="District" id="floatingLabel">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="district" type="text" className="form-control form-control-mobile" placeholder="example district" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="district"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                </FormGroup>
+                <br></br>
 
-              <FormGroup>
-                <FloatingLabel controlId="floatingAddressCount" label="AddressCount">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="addressCount" type="number" className="form-control" placeholder="0" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="addressCount"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
+                <FormGroup>
+                  <FloatingLabel controlId="floatingAddressCount" label="AddressCount" id="floatingLabel">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="addressCount" type="number" className="form-control form-control-mobile" placeholder="0" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="addressCount"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                </FormGroup>
+                <br></br>
 
-              <FormGroup>
-                <FloatingLabel controlId="floatingStreetLength" label="StreetLength">
-                  {/* A placeholder is required on each <Form.Control> */}
-                  <Field name="streetLength" type="text" className="form-control" placeholder="about x meters" />
-                </FloatingLabel>
-                <ErrorMessage
-                  name="streetLength"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </FormGroup>
-              <br></br>
+                <FormGroup>
+                  <FloatingLabel controlId="floatingStreetLength" label="StreetLength" id="floatingLabel">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="streetLength" type="text" className="form-control form-control-mobile" placeholder="about x meters" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="streetLength"
+                    component="div"
+                    className="alert alert-danger mobile-font"
+                  />
+                </FormGroup>
+                <br></br>
 
-              <div className="form-group">
-                  <button type="submit" className="btn btn-primary btn-block">
-                    Submit
-                  </button>
-                </div>
-              </div>
-
-              {errorMsg && (
-                <div className="form-group">
-                  <div className="alert alert-danger" role="alert">
-                    {errorMsg}
+                <div className="form-group-mobile">
+                    <button type="submit" className="btn btn-primary btn-block">
+                      Submit
+                    </button>
                   </div>
                 </div>
-              )}
 
-              {(errorMsg === "" && submitted) && (
-                <div className="form-group">
-                  <div
-                    className="alert alert-success"
-                    role="alert"
-                  >
-                    Updated successfully
+                {errorMsg && (
+                  <div className="form-group-mobile">
+                    <div className="alert alert-danger" role="alert">
+                      {errorMsg}
+                    </div>
                   </div>
-                </div>
-              )}
-            </Form>
-          </Formik>
-        </div>
+                )}
 
-        {street.name && (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>User Id</th>
-              <th>Street name</th>
-              <th>City</th>
-              <th>District</th>
-              <th>Address Count</th>
-              <th>Street Length</th>
+                {(errorMsg === "" && submitted) && (
+                  <div className="form-group-mobile">
+                    <div
+                      className="alert alert-success"
+                      role="alert"
+                    >
+                      Updated successfully
+                    </div>
+                  </div>
+                )}
+              </Form>
+            </Formik>
+          </div>
+
+          {street.name && (
+          <Table striped bordered hover responsive className="mobile-font">
+            <thead>
+              <tr>
+                <th>User Id</th>
+                <th>Street name</th>
+                <th>City</th>
+                <th>District</th>
+                <th>Address Count</th>
+                <th>Street Length</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr key={street.id}>
+                <td>{street.userId}</td>
+                <td>{street.name}</td>
+                <td>{street.city}</td>
+                <td>{street.district}</td>
+                <td>{street.addressCount}</td>
+                <td>{street.streetLength}</td>
             </tr>
-          </thead>
-          <tbody>
-              <tr key={street.id}>
-              <td>{street.userId}</td>
-              <td>{street.name}</td>
-              <td>{street.city}</td>
-              <td>{street.district}</td>
-              <td>{street.addressCount}</td>
-              <td>{street.streetLength}</td>
-          </tr>
-          </tbody>
-        </Table>
-        )}
+            </tbody>
+          </Table>
+          )}
 
-        <Link to={"/street/list"}>
-          <Button variant="dark">
-            Go back
-          </Button>
-        </Link>
+          <br></br>
+          <div className="form-group-mobile">
+            <Link to={"/street/list"}>
+              <Button variant="dark">
+                Go back
+              </Button>
+            </Link>
+          </div>
+          <br></br>
+        </MediaQuery>
+
+        <MediaQuery minWidth={1000}>
+          <div className="card card-container">
+            {/* used as a hook to initialize form values */}
+            <Formik
+              initialValues={initialValues}
+              onSubmit={this.handleStreetUpdate}
+            >
+              {/* acts as an HTML form tag to wrap form controls. */}
+              <Form>
+                <div>
+                <FormGroup>
+                  <FloatingLabel controlId="floatingName" label="Name">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="name" type="text" className="form-control" placeholder="example street name" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+                </FormGroup>
+                <br></br>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingCity" label="City">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="city" type="text" className="form-control" placeholder="example city name" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="city"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+                </FormGroup>
+                <br></br>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingDistrict" label="District">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="district" type="text" className="form-control" placeholder="example district" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="district"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+                </FormGroup>
+                <br></br>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingAddressCount" label="AddressCount">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="addressCount" type="number" className="form-control" placeholder="0" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="addressCount"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+                </FormGroup>
+                <br></br>
+
+                <FormGroup>
+                  <FloatingLabel controlId="floatingStreetLength" label="StreetLength">
+                    {/* A placeholder is required on each <Form.Control> */}
+                    <Field name="streetLength" type="text" className="form-control" placeholder="about x meters" />
+                  </FloatingLabel>
+                  <ErrorMessage
+                    name="streetLength"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+                </FormGroup>
+                <br></br>
+
+                <div className="form-group">
+                    <button type="submit" className="btn btn-primary btn-block">
+                      Submit
+                    </button>
+                  </div>
+                </div>
+
+                {errorMsg && (
+                  <div className="form-group">
+                    <div className="alert alert-danger" role="alert">
+                      {errorMsg}
+                    </div>
+                  </div>
+                )}
+
+                {(errorMsg === "" && submitted) && (
+                  <div className="form-group">
+                    <div
+                      className="alert alert-success"
+                      role="alert"
+                    >
+                      Updated successfully
+                    </div>
+                  </div>
+                )}
+              </Form>
+            </Formik>
+          </div>
+
+          {street.name && (
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>User Id</th>
+                <th>Street name</th>
+                <th>City</th>
+                <th>District</th>
+                <th>Address Count</th>
+                <th>Street Length</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr key={street.id}>
+                <td>{street.userId}</td>
+                <td>{street.name}</td>
+                <td>{street.city}</td>
+                <td>{street.district}</td>
+                <td>{street.addressCount}</td>
+                <td>{street.streetLength}</td>
+            </tr>
+            </tbody>
+          </Table>
+          )}
+
+          <br></br>
+          <div className="form-group">
+            <Link to={"/street/list"}>
+              <Button variant="dark">
+                Go back
+              </Button>
+            </Link>
+          </div>
+        </MediaQuery>
+
       </div>
     );
   }
@@ -216,7 +363,9 @@ export default function StreetUpdateWrapper() {
   const { streetId } = useParams();
   return (
       <div>
-          <StreetUpdate streetId={parseInt(streetId as string)} />
+          <StreetUpdate 
+            streetId={parseInt(streetId as string)} 
+          />
       </div>
   );
 }
